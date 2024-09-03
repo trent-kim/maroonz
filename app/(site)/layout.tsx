@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import localFont from 'next/font/local'
@@ -40,7 +41,7 @@ export default function RootLayout({
   return (
     <html 
       lang="en"
-      className={`bg-gray-600 ${junicodeCondensed.variable} ${ibmPlexMono.variable}`}
+      className={`bg-black ${junicodeCondensed.variable} ${ibmPlexMono.variable}`}
     >
       <body>
         {children}

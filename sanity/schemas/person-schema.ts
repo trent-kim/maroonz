@@ -10,10 +10,10 @@ const person = {
             type: 'string'
         },
         {
-            name: 'position',
-            title: 'Position',
-            type: 'array',
-            of: [{type: 'reference', to: {type: 'position'}}]
+            name: 'website',
+            title: 'Personal Website',
+            type: 'url',
+            description: "Include 'https://' in URL"
         }
     ]
 }

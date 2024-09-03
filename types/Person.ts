@@ -1,8 +1,8 @@
-export type person = {
+export type Person = {
 
     _id: string;
     _createdAt: Date;
     name: string;
-    position: string[];
+    website: string;
 
 }

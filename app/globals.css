@@ -31,3 +31,9 @@ body {
     text-wrap: balance;
   }
 } */
+
+mux-player {
+  --controls: none;
+  --media-object-fit: cover;
+  pointer-events: none;
+}

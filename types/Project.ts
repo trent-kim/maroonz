@@ -5,9 +5,10 @@ export type Project = {
     title: string;
     slug: string;
     name: string;
+    year: string;
     categories: string[];
-    thumbnail: string;
-    vimeoUrl: string;
+    image: string;
+    video: string;
     text: string;
 
 };

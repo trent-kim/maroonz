@@ -1,5 +1,6 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
+import {muxInput} from 'sanity-plugin-mux-input'
 import schemas from './sanity/schemas'
 
 const config = defineConfig({
@@ -9,7 +10,7 @@ const config = defineConfig({
     title: "Maroon/z",
     apiVersion: "2024-08-05",
     basePath: "/admin",
-    plugins: [structureTool()],
+    plugins: [structureTool(), muxInput()],
     schema: { types: schemas}
 
 })

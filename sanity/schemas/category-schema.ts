@@ -22,6 +22,7 @@ const category = {
         name: 'question',
         title: 'Question',
         type: 'text',
+        description: "A 'Yes or 'No' question where 'Yes' includes and 'No' excludes projects with this category"
       },
     ]
 }

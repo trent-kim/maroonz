@@ -20,7 +20,15 @@ const project = {
             name: 'name',
             title: 'Artist Name',
             type: 'reference', 
-            to: {type: 'person'}
+            to: { type: 'person' },
+        },
+        {
+            name: 'year',
+            title: 'Year',
+            type: 'date',
+            options: {
+                dateFormat: 'YYYY',
+              }
         },
         {
             name: 'categories',
@@ -29,7 +37,7 @@ const project = {
             of: [{type: 'reference', to: {type: 'category'}}]
         },
         {
-            name: 'thumbnail',
+            name: 'image',
             title: 'Thumbnail',
             type: 'image',
             options: { hotspot: true },
@@ -43,9 +51,9 @@ const project = {
             ]
         },
         {
-            name: 'vimeoURL',
-            title: 'Vimeo URL',
-            type: 'url'
+            name: 'video',
+            title: 'Video',
+            type: 'mux.video'
         },
         {
             name: 'text',

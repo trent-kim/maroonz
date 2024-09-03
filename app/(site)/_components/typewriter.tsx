@@ -10,7 +10,7 @@ interface TypewriterProps {
 
 const Typewriter: React.FC<TypewriterProps> = ({
   text,
-  speed = 100,
+  speed = 150,
   loop = true,
 }) => {
   const [displayedText, setDisplayedText] = useState("");
@@ -36,12 +36,11 @@ const Typewriter: React.FC<TypewriterProps> = ({
   }, [index, text, speed, loop]);
 
   return (
-    <div className="relative flex justify-center items-center h-24">
+    <div className="relative flex justify-center items-center">
       <div className="font-mono text-sm text-white whitespace-pre-wrap break-words text-center">
         {displayedText}
-        {isAnimating && (
-          <span className="inline-block w-[6px] h-[12px] bg-white animate-caret ml-1"></span>
-        )}
+
+        <span className="inline-block w-[6px] h-[12px] bg-white animate-caret ml-1"></span>
       </div>
     </div>
   );
