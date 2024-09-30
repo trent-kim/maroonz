@@ -76,6 +76,7 @@ const ArchiveContainer: React.FC<{
   }> = ({ projects, categories, logo }) => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isEighteen, setIsEighteen] = useState(false);
+    const [isExperienceEnd, setIsExperienceEnd] = useState(false);
 
 
     useEffect(() => {
@@ -88,6 +89,10 @@ const ArchiveContainer: React.FC<{
           if (savedIsEighteen) {
             setIsEighteen(JSON.parse(savedIsEighteen));
           }
+        const savedIsExperienceEnd = sessionStorage.getItem("isExperienceEnd");
+        if (savedIsExperienceEnd) {
+            setIsExperienceEnd(JSON.parse(savedIsExperienceEnd));
+        }
       }
     }, []);
 
@@ -140,7 +145,6 @@ const ArchiveContainer: React.FC<{
 
     
 
-    const { isTransitioning, setTransitioning } = useTransition();
     const [isNavClicked, setIsNavClicked] = useState(false);
 
     const [isAToHome, setIsAToHome] = useState(() => {
@@ -187,6 +191,7 @@ const ArchiveContainer: React.FC<{
         }
     
         if (isNavClicked) {
+            handleVisible([navHomeContainerRef, logoRef]);
           handleInvisible([archiveContainerRef]);
         };
     
@@ -287,19 +292,10 @@ const ArchiveContainer: React.FC<{
         }
       }
     }, []);
-  
-    useEffect(() => {
-      const container = orbContainerRef.current;
-      if (container) {
-        const boundingRect = container.getBoundingClientRect();
-        setContainerSize({
-          width: boundingRect.width,
-          height: boundingRect.height,
-        });
-      }
-    }, []);
-  
-    useEffect(() => {
+
+
+    // Function to calculate positions based on the current container size
+    const calculatePositions = useCallback(() => {
       const orbWidth = 24;
       const orbHeight = 24;
       const newPositions: Position[] = [];
@@ -319,6 +315,43 @@ const ArchiveContainer: React.FC<{
   
       setPositions(newPositions);
     }, [containerSize, selectedProjects]);
+
+    // Get the container size initially
+    useEffect(() => {
+        const container = orbContainerRef.current;
+        if (container) {
+          const boundingRect = container.getBoundingClientRect();
+          setContainerSize({
+            width: boundingRect.width,
+            height: boundingRect.height,
+          });
+        }
+      }, [orbContainerRef]);
+
+    // Calculate positions whenever the container size changes or categories change
+  useEffect(() => {
+    calculatePositions();
+  }, [containerSize, selectedProjects, calculatePositions]);
+
+  // Handle window resize to recalculate the container size and positions
+  useEffect(() => {
+    const handleResize = () => {
+      const container = orbContainerRef.current;
+      if (container) {
+        const boundingRect = container.getBoundingClientRect();
+        setContainerSize({
+          width: boundingRect.width,
+          height: boundingRect.height,
+        });
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [orbContainerRef]);
   
     // Assign animation classes only on the first render
     useEffect(() => {
@@ -343,7 +376,7 @@ const ArchiveContainer: React.FC<{
             );
             setIsFading(false);
           }, 3000); // Duration of the fade transition
-        }, 6000); // 3000ms visible + 3000ms transition
+        }, 9000); // 6000ms visible + 3000ms transition
   
         return () => clearInterval(interval);
       }
@@ -355,22 +388,26 @@ const ArchiveContainer: React.FC<{
   
         setIsSlideshowRunning(false); // Stop the slideshow
   
-        if (orbIndex === prevOrbIndex) {
-          // Toggle the state of the same orb and project
-          setIsSelected(!isSelected);
-          orbRefs[orbIndex].current!.style.backgroundColor = isSelected
-            ? "#000000"
-            : "#FFFFFF";
-          orbRefs[orbIndex].current!.style.color = isSelected
-            ? "#FFFFFF"
-            : "#000000";
-          selectedProjectRefs[orbIndex].current!.style.textShadow = isSelected
-            ? "none"
-            : "0px 0px 1px #FFFFFF, 0px 0px 2px #FFFFFF, 0px 0px 3px #FFFFFF, 0px 0px 6px #FFFFFF";
-        } else {
+        // if (orbIndex === prevOrbIndex) {
+        //   // Toggle the state of the same orb and project
+        //   setIsSelected(!isSelected);
+        //   orbRefs[orbIndex].current!.style.backgroundColor = isSelected
+        //     ? "#000000"
+        //     : "#FFFFFF";
+        //   orbRefs[orbIndex].current!.style.color = isSelected
+        //     ? "#FFFFFF"
+        //     : "#000000";
+        // orbRefs[orbIndex].current!.style.boxShadow = isSelected
+        //     ? "none"
+        //     : "0px 0px 6px 3px #FFFFFF";
+        //   selectedProjectRefs[orbIndex].current!.style.textShadow = isSelected
+        //     ? "none"
+        //     : "0px 0px 1px #FFFFFF, 0px 0px 2px #FFFFFF, 0px 0px 3px #FFFFFF, 0px 0px 6px #FFFFFF";
+        // } else {
           // Deselect the previous orb and project
           orbRefs[prevOrbIndex].current!.style.backgroundColor = "#000000";
           orbRefs[prevOrbIndex].current!.style.color = "#FFFFFF";
+        //   orbRefs[prevOrbIndex].current!.style.boxShadow = "none";
           selectedProjectRefs[prevOrbIndex].current!.style.textShadow = "none";
   
           // Select the new orb and project
@@ -378,16 +415,18 @@ const ArchiveContainer: React.FC<{
           setPrevOrbIndex(orbIndex);
           orbRefs[orbIndex].current!.style.backgroundColor = "#FFFFFF";
           orbRefs[orbIndex].current!.style.color = "#000000";
+        //   orbRefs[orbIndex].current!.style.boxShadow = "0px 0px 6px 3px #FFFFFF";
           selectedProjectRefs[orbIndex].current!.style.textShadow =
             "0px 0px 1px #FFFFFF, 0px 0px 2px #FFFFFF, 0px 0px 3px #FFFFFF, 0px 0px 6px #FFFFFF";
-        }
-  
+        // }
+        if (orbIndex !== prevOrbIndex) {
         setIsFading(true);
         setTimeout(() => {
           setActiveImageIndex(orbIndex);
           setIsFading(false);
         }, 3000);
-  
+        }
+
         // Set the flag before programmatic scroll
         isProgrammaticScroll.current = true;
   
@@ -413,7 +452,7 @@ const ArchiveContainer: React.FC<{
           }
         }
       },
-      [isSelected, prevOrbIndex, orbRefs, selectedProjectRefs]
+      [prevOrbIndex, orbRefs, selectedProjectRefs]
     );
   
     useEffect(() => {
@@ -424,6 +463,7 @@ const ArchiveContainer: React.FC<{
           setIsSelected(false);
           orbRefs[prevOrbIndex].current!.style.backgroundColor = "#000000";
           orbRefs[prevOrbIndex].current!.style.color = "#FFFFFF";
+          orbRefs[prevOrbIndex].current!.style.boxShadow = "none";
           selectedProjectRefs[prevOrbIndex].current!.style.textShadow = "none";
   
           setIsSlideshowRunning(true); // Resume the slideshow on scroll
@@ -454,9 +494,9 @@ const ArchiveContainer: React.FC<{
           isEighteen={isEighteen}
           setIsNavClicked={setIsNavClicked}
         />
-      <div ref={archiveContainerRef} className="grid grid-cols-5 grid-rows-4 gap-lg p-lg h-[100vh] w-[100vw] absolute transition-all ease-in-out duration-md opacity-0">
+      <div ref={archiveContainerRef} className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 grid-rows-4 gap-lg p-lg h-[100vh] w-[100vw] absolute transition-opacity ease-in-out duration-md opacity-0">
         
-        <div  className="row-start-2 row-span-2 col-start-1 border border-white rounded p-md flex flex-col gap-md">
+        <div  className="row-start-4 row-span-1 md:row-start-2 md:row-span-2 col-start-1 col-span-1 border border-white rounded p-md flex flex-col gap-md">
           <div className="font-body text-sm text-white">Watched</div>
           <div ref={orbContainerRef} className="relative h-full">
             {positions.map((position, index) => (
@@ -468,55 +508,39 @@ const ArchiveContainer: React.FC<{
                 onClick={() => handleWatchedOrb(index)}
                 animationClass={animationClasses.current[index]}
                 isSelected={prevOrbIndex === index && isSelected}
+                isExperienceEnd={isExperienceEnd}
               />
             ))}
           </div>
         </div>
-        <div className="row-start-4 row-span-1 col-start-1 border border-white rounded relative">
+        <div className="hidden md:block row-start-4 row-span-1 col-start-1 border border-white rounded relative">
           {selectedProjects.map((project, index) => (
             <Image
               key={index}
               src={project.image}
-              width={58}
-              height={58}
-              className={`h-full w-auto absolute transition-all ease-in-out duration-md ${
+              width={500}
+              height={500}
+              className={`h-full w-auto absolute transition-opacity ease-in-out duration-md ${
                 index === activeImageIndex
                   ? isFading
                     ? "opacity-0"
                     : "opacity-100"
                   : "opacity-0"
-              }`}
+              } ${isExperienceEnd ? "" : "blur"}`}
               alt={project.title}
             />
           ))}
         </div>
         <div
           ref={scrollContainerRef}
-          className="row-start-2 row-span-3 col-start-2 col-span-4 border border-white rounded px-md pb-md flex flex-col relative overflow-y-scroll h-full"
+          className="row-start-2 row-span-2 md:row-start-2 md:row-span-3 col-start-1 col-span-1 md:col-start-2 md:col-span-2 xl:col-start-2 xl:col-span-4 border border-white rounded px-md pb-md flex flex-col relative overflow-y-scroll h-full"
         >
           <div className="font-body text-sm text-white flex gap-lg sticky top-[0px] bg-black py-md z-10">
             <div className="w-1/2">Title</div>
             <div className="w-1/4">Artist</div>
             <div className="w-1/4">Year</div>
           </div>
-          <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
+         
           {projects.map((project, index) => {
             const isFiltered = filteredProjects.some(
               (filteredProject) => filteredProject.title === project.title
@@ -540,28 +564,10 @@ const ArchiveContainer: React.FC<{
               >
                 <div className="w-1/2">{project.title}</div>
                 <div className="w-1/4">{project.name}</div>
-                <div className="w-1/4">{project.year.slice(0, 4)}</div>
+                {project.year && <div className="w-1/4">{project.year.slice(0, 4)}</div>}
               </div>
             );
           })}
-           <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
-        <div className="font-serif text-md text-white">{projects[0].title}</div>
         </div>
       </div>
     </div>

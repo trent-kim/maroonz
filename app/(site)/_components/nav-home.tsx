@@ -2,9 +2,8 @@
 
 import { Logo } from "@/types/Logo";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { useTransition } from "../_hooks/transition-context";
 
 const NavHome: React.FC<{
@@ -15,22 +14,24 @@ const NavHome: React.FC<{
   logo: Logo[];
   isEighteen: boolean;
   setIsNavClicked: Dispatch<SetStateAction<boolean>>;
-}> = ({ logoRef, navHomeContainerRef, archiveButtonRef, isSubmitted, logo, isEighteen, setIsNavClicked }) => {
+}> = ({
+  logoRef,
+  navHomeContainerRef,
+  archiveButtonRef,
+  isSubmitted,
+  logo,
+  isEighteen,
+  setIsNavClicked,
+}) => {
   const router = useRouter();
   const pathname = usePathname(); // Get the current path
   const { isTransitioning, setTransitioning } = useTransition();
   const fadeDuration = 3000;
 
-const handleNavigation = (url: string) => {
-    if (!isTransitioning) {
+  const handleNavigation = (url: string) => {
+    if (!isTransitioning && pathname !== url) {
       setTransitioning(true);
       setIsNavClicked(true);
-      // // Trigger fade out for the current container (Archive or About)
-      // const currentContainerRef = document.querySelector(".fade-container");
-      // if (currentContainerRef) {
-      //   (currentContainerRef as HTMLElement).style.opacity = "0";
-      //   (currentContainerRef as HTMLElement).style.transition = `opacity ${fadeDuration}ms ease-in-out`;
-      // }
 
       // Delay navigation until the fade out completes
       setTimeout(() => {
@@ -40,17 +41,8 @@ const handleNavigation = (url: string) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (!isTransitioning && isEighteen) {
-  //     if (navHomeContainerRef.current) {
-  //       navHomeContainerRef.current.style.opacity = "1";
-  //       navHomeContainerRef.current.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
-  //     }
-  //   }
-  // }, [isTransitioning, isEighteen]);
-
   return (
-    <div className="absolute top-lg left-lg z-20">
+    <div className="absolute top-lg left-lg z-20 w-[calc(100%-48px)] md:w-auto">
       <div className="flex gap-lg items-center">
         <Image
           ref={logoRef}
@@ -58,16 +50,14 @@ const handleNavigation = (url: string) => {
           width={58}
           height={58}
           onClick={() => handleNavigation("/")}
-          className={` cursor-pointer ${
-            !isEighteen
-              ? "opacity-0"
-              : "opacity-1 transition-opacity"
+          className={`cursor-pointer w-[58px] h-[58px] ${
+            !isEighteen ? "opacity-0" : "opacity-100"
           }`}
           alt=""
         />
         <div
           ref={navHomeContainerRef}
-          className={`border border-white rounded p-md flex gap-md invisible ${
+          className={`border border-white rounded p-md flex gap-md justify-between md:justify-normal invisible w-full md:w-auto ${
             !isEighteen ? "opacity-0" : "opacity-1 transition-opacity"
           }`}
         >
@@ -80,22 +70,19 @@ const handleNavigation = (url: string) => {
             </span>
           </div>
           <div
-          ref={archiveButtonRef}
+            ref={archiveButtonRef}
             className={`font-serif text-md text-white blur`}
-            // style={{
-            //   transitionDelay: "3000ms",
-            //   transitionProperty: "filter",
-            // }}
           >
             {isSubmitted ? (
               <span
                 onClick={() => handleNavigation("/archive")}
-                className="cursor-pointer hover:text-shadow-glow transition-all ease-in-out duration-sm"
+                className="cursor-pointer hover:text-shadow-glow"
+                style={{ transition: "text-shadow 500ms ease-in-out" }}
               >
                 Archive
               </span>
             ) : (
-              <span className="cursor-default">Archive</span>
+              <span className="cursor-default blur">Archive</span>
             )}
           </div>
         </div>

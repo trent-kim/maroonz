@@ -10,14 +10,15 @@ const introText = {
             name: 'title',
             title: 'Title',
             type: 'string',
-            description: 'For organization only (not displayed)'
+            description: 'For version history organization only (not displayed on website)',
+            validation: (rule: Rule) => rule.required(),
         },
         {
             name: 'description',
             title: 'Description',
             type: 'text',
-            validation: (rule: Rule) => rule.max(300),
-            description: 'A short description of Maroon/z to be displayed during age verification (max 300 characters)'
+            validation: (rule: Rule) => rule.required().max(300),
+            description: 'A short description of Maroon/z to be displayed throughout the home page experience (max 300 characters)'
         }
     ]
 }

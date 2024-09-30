@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 interface BarAudioProps {
   src: string;
@@ -45,7 +45,7 @@ const BarAudio: React.FC<BarAudioProps> = ({
   return (
     <div
       ref={progressBarContainerRef}
-      className="row-start-3 col-start-1 content-end invisible opacity-0 transition-all ease-in-out duration-md"
+      className="row-start-4 md:row-start-3 col-start-1 content-end invisible opacity-0 transition-all ease-in-out duration-md"
     >
       <audio
         ref={progressBarRef}
@@ -74,7 +74,7 @@ const BarAudio: React.FC<BarAudioProps> = ({
           </div>
         </div>
         <div className="font-mono text-sm text-white mix-blend-difference absolute top-[0px] w-full h-full flex justify-center items-center opacity-0 group-hover:opacity-100 transition-all ease-in-out duration-sm">
-          {isMuted ? 'Unmute' : 'Mute'}
+          {isMuted ? "Unmute" : "Mute"}
         </div>
       </div>
     </div>

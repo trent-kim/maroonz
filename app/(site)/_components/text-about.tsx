@@ -48,7 +48,7 @@ const TextAbout: React.FC<TextProjectProps> = ({ text, speed }) => {
   return (
     <div
       ref={TextProjectContainerRef}
-      className="row-start-2 row-span-4 col-start-2 col-span-4 border border-white rounded flex flex-col gap-md p-md overflow-scroll"
+      className=" row-start-2 row-span-2 md:row-start-2 md:row-span-3 col-start-1 col-span-1 md:col-start-2 md:col-span-2 xl:col-start-2 xl:col-span-4 border border-white rounded flex flex-col gap-md p-md overflow-scroll"
       onScroll={handleScroll}
     >
       <div className="font-body text-sm text-white">Info</div>

@@ -8,9 +8,7 @@ import background from './background-schema';
 import blackCode from './black-code-schema';
 import logo from './logo-schema';
 import aboutText from './about-text-schema';
-import questionsText from './questions-text-schema';
 
-
-const schemas = [introText, logo, background, introAudio, questionsText, project, category, blackCode, aboutText, position, person];
+const schemas = [introText, logo, background, introAudio, project, category, blackCode, aboutText, position, person];
 
 export default schemas;

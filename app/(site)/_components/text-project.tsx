@@ -31,14 +31,13 @@ const TextProject: React.FC<TextProjectProps> = ({
   useEffect(() => {
     // Reset text and index when visibility changes to false
     setTimeout(() => {
-    if (!isVisible) {
-      setDisplayedText("");
-      setIndex(0);
-    }
-  }, 3000);
+      if (!isVisible) {
+        setDisplayedText("");
+        setIndex(0);
+      }
+    }, 3000);
   }, [isVisible]);
 
-  
   useEffect(() => {
     const container = TextProjectContainerRef.current;
 
@@ -55,26 +54,27 @@ const TextProject: React.FC<TextProjectProps> = ({
     if (container) {
       // Allowing a slight margin of error to account for rounding issues in scrollTop
       const isAtBottom =
-        container.scrollTop + container.clientHeight >= container.scrollHeight - 5;
+        container.scrollTop + container.clientHeight >=
+        container.scrollHeight - 5;
       shouldAutoScroll.current = isAtBottom;
     }
   };
 
   return (
-    <div 
-    ref={TextProjectContainerRef}
-    className={`row-start-2 row-span-2 col-start-5 overflow-scroll transition-opacity ease-in-out duration-md ${
-        isVisible ? "opacity-100" : "opacity-0"}`}
-    onScroll={handleScroll}
+    <div
+      ref={TextProjectContainerRef}
+      className={`hidden md:block row-start-2 row-span-1 md:row-start-2 md:row-span-2 col-start-1 md:col-start-3 xl:col-start-5 overflow-scroll transition-opacity ease-in-out duration-md z-10 ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
+      onScroll={handleScroll}
     >
-    <div className="relative flex">
-      <div className="font-body text-sm text-white whitespace-pre-wrap break-words">
-        {displayedText}
-        
+      <div className="relative flex">
+        <div className="font-body text-sm text-white whitespace-pre-wrap break-words">
+          {displayedText}
+
           <span className="inline-block w-[6px] h-[12px] bg-white animate-caret ml-1"></span>
-        
+        </div>
       </div>
-    </div>
     </div>
   );
 };

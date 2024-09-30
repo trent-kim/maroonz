@@ -1,3 +1,5 @@
+import { Rule } from '@sanity/types';
+
 const introAudio = {
 
     name: 'introAudio',
@@ -7,13 +9,17 @@ const introAudio = {
         {
             name: 'title',
             title: 'Title',
-            type: 'string'
+            type: 'string',
+            description: 'For version history organization only (not displayed on website)',
+            validation: (rule: Rule) => rule.required(),
         },
         {
             name: 'name',
             title: 'Artist Name',
             type: 'reference', 
             to: { type: 'person' },
+            validation: (rule: Rule) => rule.required(),
+
         },
         {
             name: 'audio',
@@ -22,7 +28,8 @@ const introAudio = {
             options: {
                 accept: 'audio/mpeg'
               },
-            description: 'Must be an .mp3 file'
+            description: 'Audio used in the home page introduction after age verification. Must be an .mp3 file.',
+            validation: (rule: Rule) => rule.required(),
         },
     ]
 }

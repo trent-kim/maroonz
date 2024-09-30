@@ -4,17 +4,17 @@ import MuxPlayerElement from "@mux/mux-player";
 import { Dispatch, SetStateAction, useState } from "react";
 
 interface BarVideoProps {
-    src: string | null; // Allow null
-    progressRef: React.RefObject<HTMLDivElement>;
-    progressBarRef: React.RefObject<MuxPlayerElement>;
-    progressBarContainerRef: React.RefObject<HTMLDivElement>;
-    progress: number;
-    setProgress: Dispatch<SetStateAction<number>>;
-    title: string;
-    name: string;
-    isVisible: boolean; // Prop to control visibility
-  }
-  
+  src: string | null; // Allow null
+  progressRef: React.RefObject<HTMLDivElement>;
+  progressBarRef: React.RefObject<MuxPlayerElement>;
+  progressBarContainerRef: React.RefObject<HTMLDivElement>;
+  progress: number;
+  setProgress: Dispatch<SetStateAction<number>>;
+  title: string;
+  name: string;
+  isVisible: boolean; // Prop to control visibility
+}
+
 const BarVideo: React.FC<BarVideoProps> = ({
   src,
   progressRef,
@@ -39,7 +39,7 @@ const BarVideo: React.FC<BarVideoProps> = ({
   return (
     <div
       ref={progressBarContainerRef}
-      className={`row-start-3 col-start-1 content-end transition-opacity ease-in-out duration-md ${
+      className={`row-start-4 md:row-start-3 col-start-1 content-end transition-opacity ease-in-out duration-md ${
         isVisible ? "opacity-100 z-10" : "opacity-0 z-0"
       }`}
     >

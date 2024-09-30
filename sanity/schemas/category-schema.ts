@@ -10,6 +10,7 @@ const category = {
         name: 'category',
         title: 'Category',
         type: 'string',
+        description: 'Category name based on the corresponding question (not displayed on website)'
       },
       {
         name: 'number',
@@ -22,7 +23,7 @@ const category = {
         name: 'question',
         title: 'Question',
         type: 'text',
-        description: "A 'Yes or 'No' question where 'Yes' includes and 'No' excludes projects with this category"
+        description: "A 'Yes or 'No' question phased where 'Yes' includes projects with this category and 'No' excludes projects with this category"
       },
     ]
 }

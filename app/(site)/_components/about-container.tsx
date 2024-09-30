@@ -98,6 +98,7 @@ const AboutContainer: React.FC<{
         }
     
         if (isNavClicked) {
+          handleVisible([navHomeContainerRef, logoRef]);
           handleInvisible([aboutContainerRef]);
         };
     
@@ -196,23 +197,24 @@ const AboutContainer: React.FC<{
       isEighteen={isEighteen}
       setIsNavClicked={setIsNavClicked}
     />
-  <div ref={aboutContainerRef} className="grid grid-cols-5 grid-rows-4 gap-lg p-lg h-[100vh] w-[100vw] absolute transition-all ease-in-out duration-md opacity-0">
+  <div ref={aboutContainerRef} className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 grid-rows-4 gap-lg p-lg h-[100vh] w-[100vw] absolute transition-all ease-in-out duration-md opacity-0">
        
-      <div className="row-start-2 row-span-4 col-start-1 border border-white rounded flex flex-col gap-lg p-md overflow-scroll">
+      <div className="row-start-4 row-span-1 md:row-start-2 md:row-span-3 col-start-1 border border-white rounded flex flex-col gap-lg p-md overflow-scroll">
         {positions.map((position, index) => (
-          <div className="flex flex-col gap-md">
+          <div key={index} className="flex flex-col gap-md">
             <div className="font-body text-sm text-white">{position.title}</div>
             <div className="font-serif text-md text-white">
               {position.people.map((person, index) =>
                 person.website ? (
                   <Link
+                    key={index}
                     href={person.website}
                     className="transition-all ease-in-out duration-sm cursor-pointer hover:text-shadow-glow"
                   >
                     {person.name}
                   </Link>
                 ) : (
-                  <div>
+                  <div key={index}>
                     {person.name}
                     <br></br>
                   </div>
@@ -222,7 +224,19 @@ const AboutContainer: React.FC<{
           </div>
         ))}
       </div>
-      <TextAbout text={aboutText[0].description} speed={150}></TextAbout>
+      <div
+      className="row-start-2 row-span-2 md:row-start-2 md:row-span-3 col-start-1 col-span-1 md:col-start-2 md:col-span-2 xl:col-start-2 xl:col-span-4 border border-white rounded flex flex-col gap-md p-md overflow-scroll"
+    >
+      <div className="font-body text-sm text-white">Info</div>
+      <div className="relative flex">
+        <div className="font-body text-sm text-white">
+          {aboutText[0].description}
+
+          <span className="inline-block w-[6px] h-[12px] bg-white animate-caret ml-1"></span>
+        </div>
+      </div>
+    </div>
+      {/* <TextAbout text={aboutText[0].description} speed={150}></TextAbout> */}
     </div>
     </div>
   );

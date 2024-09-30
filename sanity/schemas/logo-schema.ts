@@ -1,3 +1,5 @@
+import { Rule } from '@sanity/types';
+
 const logo = {
 
     name: 'logo',
@@ -7,20 +9,16 @@ const logo = {
         {
             name: 'title',
             title: 'Title',
-            type: 'string'
+            type: 'string',
+            description: 'For version history organization only (not displayed on website)',
+            validation: (rule: Rule) => rule.required(),
         },
         {
             name: 'image',
             title: 'Image',
             type: 'image',
-            fields: [
-                {
-                    name: 'alt',
-                    title: 'Alt Text',
-                    type: 'string'
-                
-                }
-            ]
+            description: 'Ensure .gif file has a transparent background',
+            validation: (rule: Rule) => rule.required(),
         },
 
 

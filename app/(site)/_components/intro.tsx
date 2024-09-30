@@ -1,6 +1,9 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import { VisibilityProvider, useVisibility } from "../_hooks/visibility-context";
+import {
+  VisibilityProvider,
+  useVisibility,
+} from "../_hooks/visibility-context";
 import Typewriter from "./typewriter";
 import Map from "./map";
 import NavHome from "./nav-home";
@@ -17,7 +20,6 @@ import { Background } from "@/types/Background";
 import { Logo } from "@/types/Logo";
 import MuxPlayer from "@mux/mux-player-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useTransition } from "../_hooks/transition-context";
 
 const Intro: React.FC<{
   projects: Project[];
@@ -49,9 +51,11 @@ const Intro: React.FC<{
     return false;
   });
   const [progress, setProgress] = useState(() => {
-    // Parse the stored progress value as an integer, or default to 0
-    const savedProgress = sessionStorage.getItem('progress');
-    return savedProgress !== null ? JSON.parse(savedProgress) : 0;
+    if (typeof window !== "undefined") {
+      // Parse the stored progress value as an integer, or default to 0
+      const savedProgress = sessionStorage.getItem("progress");
+      return savedProgress !== null ? JSON.parse(savedProgress) : 0;
+    }
   });
   const [isQuestions, setIsQuestions] = useState(false);
   const [isQuestionsEnd, setIsQuestionsEnd] = useState(false);
@@ -64,10 +68,9 @@ const Intro: React.FC<{
       sessionStorage.setItem("isSubmitted", JSON.stringify(isSubmitted));
       sessionStorage.setItem("isEighteen", JSON.stringify(isEighteen));
       sessionStorage.setItem("isAudio", JSON.stringify(isAudio));
-      sessionStorage.setItem('progress', JSON.stringify(progress));
+      sessionStorage.setItem("progress", JSON.stringify(progress));
     }
-  }, [isSubmitted, isEighteen, isAudio]);
-
+  }, [isSubmitted, isEighteen, isAudio, progress]);
 
   const { setVisibleContainers } = useVisibility(); // Use context to manage visibility
 
@@ -75,6 +78,8 @@ const Intro: React.FC<{
   const introContainerRef = useRef<HTMLDivElement>(null);
 
   // Refs for the various containers
+  const ageContainerRef = useRef<HTMLDivElement>(null);
+  const logoAnimationContainerRef = useRef<HTMLDivElement>(null);
   const backgroundContainerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLImageElement | null>(null);
   const navHomeContainerRef = useRef<HTMLDivElement | null>(null);
@@ -85,25 +90,20 @@ const Intro: React.FC<{
   const progressBarContainerRef = useRef<HTMLDivElement | null>(null);
   const driftContainerRef = useRef<HTMLDivElement | null>(null);
   const completedContainerRef = useRef<HTMLDivElement | null>(null);
+  const completedMobileContainerRef = useRef<HTMLDivElement | null>(null);
   const orbContainerRef = useRef<HTMLDivElement | null>(null);
   const questionsContainerRef = useRef<HTMLDivElement | null>(null);
 
-    const { isTransitioning, setTransitioning } = useTransition();
   const fadeDuration = 3000;
-  const router = useRouter();
   const pathname = usePathname(); // Get the current path
-  const prevPathname = sessionStorage.getItem('prevPathname');
   const [isNavClicked, setIsNavClicked] = useState(false);
   const [isDriftToHome, setIsDriftToHome] = useState(false);
-  const [isAToHome, setIsAToHome] = useState(false);
-
-
 
   useEffect(() => {
     const savedIsDriftToHome = sessionStorage.getItem("isDriftToHome");
     if (savedIsDriftToHome) {
-            setIsDriftToHome(JSON.parse(savedIsDriftToHome));
-          }
+      setIsDriftToHome(JSON.parse(savedIsDriftToHome));
+    }
 
     if (!isSubmitted) {
       setVisibleContainers({
@@ -111,224 +111,333 @@ const Intro: React.FC<{
         progressBarContainerRef: 0 < progress && progress < 100,
         driftContainerRef: isEighteen && !isDrift,
         completedContainerRef: isAudio,
+        completedMobileContainerRef: isAudio,
         orbContainerRef: isQuestionsEnd,
         questionsContainerRef: isQuestions,
       });
-    // } else if ( sessionStorage.getItem("isDriftToHome") === "true") {
-    //   setTimeout(() => {
-    //   setVisibleContainers({
-    //     textIntroContainerRef: !isDrift,
-    //     progressBarContainerRef: false,
-    //     driftContainerRef: !isDrift,
-    //     completedContainerRef: false,
-    //     orbContainerRef: false,
-    //     questionsContainerRef: false,
-    //   });
-    // }, fadeDuration);
-    } else if (savedIsDriftToHome === 'true') {
-            setTimeout(() => {
-
-      setVisibleContainers({
-        textIntroContainerRef: !isDrift,
-        progressBarContainerRef: false,
-        driftContainerRef: !isDrift,
-        completedContainerRef: false,
-        orbContainerRef: false,
-        questionsContainerRef: false,
-      });
-          }, fadeDuration);
-
+    } else if (savedIsDriftToHome === "true") {
+      setTimeout(() => {
+        setVisibleContainers({
+          textIntroContainerRef: !isDrift,
+          progressBarContainerRef: false,
+          driftContainerRef: !isDrift,
+          completedContainerRef: false,
+          completedMobileContainerRef: false,
+          orbContainerRef: false,
+          questionsContainerRef: false,
+        });
+      }, fadeDuration);
     } else {
       setVisibleContainers({
         textIntroContainerRef: !isDrift,
         progressBarContainerRef: false,
         driftContainerRef: !isDrift,
         completedContainerRef: false,
+        completedMobileContainerRef: false,
         orbContainerRef: false,
         questionsContainerRef: false,
       });
     }
-  }, [isEighteen, isDrift, progress, isAudio, isQuestions, isQuestionsEnd, isDriftToHome, setVisibleContainers]);
-
-
-
-    // useEffect(() => {
-    //   if (typeof window !== "undefined") {
-    //     const savedIsDriftToHome = sessionStorage.getItem("isDriftToHome");
-    //     if (savedIsDriftToHome) {
-    //       setIsDriftToHome(JSON.parse(savedIsDriftToHome));
-    //     }
-    //     const savedIsAToHome = sessionStorage.getItem("isAToHome");
-    //     if (savedIsAToHome) {
-    //       setIsAToHome(JSON.parse(savedIsAToHome));
-    //     }
-    //   }
-    // }, []);
-
+  }, [
+    isSubmitted,
+    isEighteen,
+    isDrift,
+    progress,
+    isAudio,
+    isQuestions,
+    isQuestionsEnd,
+    isDriftToHome,
+    setVisibleContainers,
+  ]);
 
   useEffect(() => {
-
-    const savedIsDriftToHome = sessionStorage.getItem("isDriftToHome");
-    if (savedIsDriftToHome) {
-            setIsDriftToHome(JSON.parse(savedIsDriftToHome));
-          }
-
     const savedIsAToHome = sessionStorage.getItem("isAToHome");
+    const savedIsDriftToHome = sessionStorage.getItem("isDriftToHome");
+
+    if (savedIsDriftToHome) {
+      setIsDriftToHome(JSON.parse(savedIsDriftToHome));
+    }
 
     const handleRouteChange = (url: string) => {
-      console.log('Prev:', prevPathname)
       if (isSubmitted) {
-        if (savedIsDriftToHome === 'true') {
+        if (savedIsDriftToHome === "true") {
           // Navigating from or to experience page
-          
-          // setTransitioning(true);
-          // handleInvisible([navHomeContainerRef, mapContainerRef]);
           setTimeout(() => {
-          handleVisible([navHomeContainerRef, logoRef, mapContainerRef, backgroundContainerRef, textIntroContainerRef, driftContainerRef]);
-          setIsDriftToHome(false)
-          sessionStorage.setItem('isDriftToHome', JSON.stringify(false));
-        }, fadeDuration);
-          // setTimeout(() => {
-          //   router.push(url);
-          //   setTransitioning(false);
-          // }, fadeDuration);
-        } else if (savedIsAToHome === 'true') {
+            handleVisible([
+              navHomeContainerRef,
+              logoRef,
+              mapContainerRef,
+              backgroundContainerRef,
+              textIntroContainerRef,
+              driftContainerRef,
+            ]);
+            setIsDriftToHome(false);
+            sessionStorage.setItem("isDriftToHome", JSON.stringify(false));
+          }, fadeDuration);
+        } else if (savedIsAToHome === "true") {
           setTimeout(() => {
-            handleVisible([navHomeContainerRef, logoRef, mapContainerRef, backgroundContainerRef, textIntroContainerRef, driftContainerRef]);
-            sessionStorage.setItem('isAToHome', JSON.stringify(false));
+            handleVisible([
+              navHomeContainerRef,
+              logoRef,
+              mapContainerRef,
+              backgroundContainerRef,
+              textIntroContainerRef,
+              driftContainerRef,
+            ]);
+            sessionStorage.setItem("isAToHome", JSON.stringify(false));
           }, fadeDuration);
         } else {
           handleNoBlur([archiveButtonRef]);
           setTimeout(() => {
-          handleVisible([navHomeContainerRef, logoRef, mapContainerRef, backgroundContainerRef, textIntroContainerRef, driftContainerRef]);
-          sessionStorage.setItem('isAToHome', JSON.stringify(false));
-        }, fadeDuration);
+            // handleVisible([navHomeContainerRef, logoRef, mapContainerRef, backgroundContainerRef, textIntroContainerRef, driftContainerRef]);
+            sessionStorage.setItem("isAToHome", JSON.stringify(false));
+          }, fadeDuration);
         }
-      // } else if (url.includes("/archive") || url.includes("/about")) {
-      //   setTimeout(() => {
-      //     handleVisible([navHomeContainerRef, logoRef, mapContainerRef, driftContainerRef, backgroundContainerRef, textIntroContainerRef]);
-      //     setIsAudio(true);
-      //   }, fadeDuration);
       } else if (isAudio) {
         setIsQuestionsEnd(true);
         setTimeout(() => {
-          handleVisible([navHomeContainerRef, logoRef, mapContainerRef, driftContainerRef, backgroundContainerRef, textIntroContainerRef, completedContainerRef, orbContainerRef]);
-          sessionStorage.setItem('isAToHome', JSON.stringify(false));
+          handleVisible([
+            navHomeContainerRef,
+            logoRef,
+            mapContainerRef,
+            driftContainerRef,
+            backgroundContainerRef,
+            textIntroContainerRef,
+            completedContainerRef,
+            completedMobileContainerRef,
+            orbContainerRef,
+          ]);
+          sessionStorage.setItem("isAToHome", JSON.stringify(false));
         }, fadeDuration);
       } else if (isEighteen) {
         setTimeout(() => {
-          handleVisible([navHomeContainerRef, logoRef, mapContainerRef, progressBarContainerRef, driftContainerRef, backgroundContainerRef, textIntroContainerRef]);      
+          handleVisible([
+            navHomeContainerRef,
+            logoRef,
+            mapContainerRef,
+            progressBarContainerRef,
+            driftContainerRef,
+            backgroundContainerRef,
+            textIntroContainerRef,
+          ]);
           if (progressBarRef.current) {
             progressBarRef.current.play();
           }
-          sessionStorage.setItem('isAToHome', JSON.stringify(false));
+          sessionStorage.setItem("isAToHome", JSON.stringify(false));
         }, fadeDuration);
-       
       } else {
         handleVisible([textIntroContainerRef]);
       }
     };
 
     if (isNavClicked) {
-      handleInvisible([mapContainerRef, driftContainerRef, backgroundContainerRef, textIntroContainerRef, progressBarContainerRef, completedContainerRef, orbContainerRef]);
-    };
+      handleInvisible([
+        mapContainerRef,
+        driftContainerRef,
+        backgroundContainerRef,
+        textIntroContainerRef,
+        progressBarContainerRef,
+        completedContainerRef,
+        completedMobileContainerRef,
+        orbContainerRef,
+        questionsContainerRef,
+      ]);
+    }
+
+    if (isEighteen) {
+      handleInvisible([ageContainerRef, logoAnimationContainerRef]);
+    }
 
     if (isAudio) {
       handleInvisible([progressBarContainerRef]);
-    };
-
-    if (isSubmitted) {
-      handleInvisible([orbContainerRef]);
-      setTimeout(() => {
-      handleInvisible([completedContainerRef]);
-    }, 3000);
-    };
-
-    if (isDrift) {
-      handleInvisible([navHomeContainerRef, driftContainerRef, backgroundContainerRef, textIntroContainerRef]);
     }
 
+    if (isSubmitted) {
+      handleUnhidden([driftContainerRef]);
+      handleInvisible([orbContainerRef]);
+      setTimeout(() => {
+        handleInvisible([completedContainerRef, completedMobileContainerRef]);
+        handleVisible([driftContainerRef]);
+        handleNoBlur([archiveButtonRef]);
+      }, 3000);
+    }
+
+    if (isDrift) {
+      handleInvisible([
+        navHomeContainerRef,
+        driftContainerRef,
+        backgroundContainerRef,
+        textIntroContainerRef,
+      ]);
+    }
 
     // Initial check on mount
     handleRouteChange(pathname);
-    console.log('A:', savedIsAToHome)
-    if (savedIsAToHome === 'true' || savedIsDriftToHome === 'true') {
+    
+    if (savedIsAToHome === "true" || savedIsDriftToHome === "true") {
       if (isSubmitted) {
-        if (savedIsDriftToHome === 'true') {
+        if (savedIsDriftToHome === "true") {
           return () => {
-            
-            setInvisible([navHomeContainerRef, driftContainerRef, backgroundContainerRef, textIntroContainerRef]);
+            handleUnhidden([driftContainerRef]);
+            setInvisible([
+              navHomeContainerRef,
+              driftContainerRef,
+              backgroundContainerRef,
+              textIntroContainerRef,
+            ]);
             setVisible([mapContainerRef]);
             setNoBlur([archiveButtonRef]);
           };
         } else {
           return () => {
-            setInvisible([mapContainerRef, driftContainerRef, backgroundContainerRef, textIntroContainerRef]);
+            handleUnhidden([driftContainerRef]);
+            setInvisible([
+              mapContainerRef,
+              driftContainerRef,
+              backgroundContainerRef,
+              textIntroContainerRef,
+            ]);
             setVisible([navHomeContainerRef]);
             setNoBlur([archiveButtonRef]);
           };
         }
       } else if (isAudio) {
         return () => {
-          setInvisible([mapContainerRef, driftContainerRef, backgroundContainerRef, textIntroContainerRef, completedContainerRef, orbContainerRef]);
+          setInvisible([
+            mapContainerRef,
+            driftContainerRef,
+            backgroundContainerRef,
+            textIntroContainerRef,
+            completedContainerRef,
+            completedMobileContainerRef,
+            orbContainerRef,
+          ]);
+          setVisible([navHomeContainerRef]);
         };
       } else if (isEighteen) {
         return () => {
-          setInvisible([mapContainerRef, driftContainerRef, backgroundContainerRef, textIntroContainerRef, progressBarContainerRef]);
+          setInvisible([
+            mapContainerRef,
+            driftContainerRef,
+            backgroundContainerRef,
+            textIntroContainerRef,
+            progressBarContainerRef,
+          ]);
+          setVisible([navHomeContainerRef]);
         };
       } else {
         return () => {
-          setInvisible([navHomeContainerRef, logoRef, mapContainerRef, driftContainerRef, backgroundContainerRef]);
+          setInvisible([
+            navHomeContainerRef,
+            logoRef,
+            mapContainerRef,
+            driftContainerRef,
+            backgroundContainerRef,
+          ]);
         };
       }
-  } else {
-    if (isSubmitted) {
-      if (isDriftToHome) {
-        return () => {
-          handleInvisible([progressBarContainerRef, orbContainerRef]);
-          setNoBlur([archiveButtonRef]);
-        };
-      } else {
-        return () => {
-          handleInvisible([progressBarContainerRef, orbContainerRef]);
-          setBlur([archiveButtonRef]);
-        };
-      }
-    } else if (isAudio) {
-      return () => {
-        handleInvisible([progressBarContainerRef, orbContainerRef]);
-      };
-    } else if (isEighteen) {
-      return () => {
-        handleInvisible([ progressBarContainerRef]);
-      };
     } else {
-      return () => {
-        setInvisible([navHomeContainerRef, logoRef, mapContainerRef, driftContainerRef, backgroundContainerRef]);
-      };
+      if (isSubmitted) {
+        if (isDriftToHome) {
+          return () => {
+            handleUnhidden([driftContainerRef]);
+            handleInvisible([progressBarContainerRef, orbContainerRef]);
+            setNoBlur([archiveButtonRef]);
+          };
+        } else {
+          return () => {
+            handleUnhidden([driftContainerRef]);
+            handleInvisible([progressBarContainerRef, orbContainerRef]);
+            setVisible([
+              navHomeContainerRef,
+              logoRef,
+              mapContainerRef,
+              driftContainerRef,
+              backgroundContainerRef,
+              textIntroContainerRef,
+            ]);
+            setBlur([archiveButtonRef]);
+          };
+        }
+      } else if (isAudio) {
+        return () => {
+          handleInvisible([progressBarContainerRef]);
+          setInvisible([
+            completedContainerRef,
+            completedMobileContainerRef,
+            orbContainerRef,
+          ]);
+          setVisible([
+            navHomeContainerRef,
+            logoRef,
+            mapContainerRef,
+            driftContainerRef,
+            backgroundContainerRef,
+            textIntroContainerRef,
+          ]);
+        };
+      } else if (isEighteen) {
+        return () => {
+          handleInvisible([ageContainerRef, logoAnimationContainerRef]);
+          setVisible([
+            navHomeContainerRef,
+            logoRef,
+            mapContainerRef,
+            driftContainerRef,
+            backgroundContainerRef,
+            textIntroContainerRef,
+            progressBarContainerRef,
+          ]);
+        };
+      } else {
+        return () => {
+          setVisible([ageContainerRef, logoAnimationContainerRef]);
+          setInvisible([
+            navHomeContainerRef,
+            logoRef,
+            mapContainerRef,
+            driftContainerRef,
+            backgroundContainerRef,
+          ]);
+        };
+      }
     }
-
-  }
-    
-  }, [pathname, isEighteen, isAudio, isSubmitted, isDrift, isDriftToHome, isNavClicked, progressBarRef]);
-
+  }, [
+    pathname,
+    isEighteen,
+    isAudio,
+    isSubmitted,
+    isDrift,
+    isDriftToHome,
+    isNavClicked,
+    progressBarRef,
+  ]);
 
   useEffect(() => {
     if (progress === 100) {
       setIsAudio(true);
-    };
+    }
 
     if (isQuestions) {
       handleVisible([questionsContainerRef]);
     } else {
       handleInvisible([questionsContainerRef]);
-    };
-
-
+    }
   }, [progress, isQuestions, isSubmitted]);
 
+  const handleUnhidden = (
+    refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]
+  ) => {
+    refs.forEach((ref) => {
+      if (ref.current) {
+        ref.current!.style.display = "block";
+      }
+    });
+  };
 
-  const handleVisible = (refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]) => {
+  const handleVisible = (
+    refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]
+  ) => {
     refs.forEach((ref) => {
       if (ref.current) {
         ref.current!.style.visibility = "visible";
@@ -338,7 +447,9 @@ const Intro: React.FC<{
     });
   };
 
-  const handleInvisible = (refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]) => {
+  const handleInvisible = (
+    refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]
+  ) => {
     refs.forEach((ref) => {
       if (ref.current) {
         ref.current!.style.opacity = "0";
@@ -348,7 +459,9 @@ const Intro: React.FC<{
     });
   };
 
-  const setInvisible = (refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]) => {
+  const setInvisible = (
+    refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]
+  ) => {
     refs.forEach((ref) => {
       if (ref.current) {
         ref.current!.style.opacity = "0";
@@ -357,7 +470,9 @@ const Intro: React.FC<{
     });
   };
 
-  const setVisible = (refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]) => {
+  const setVisible = (
+    refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]
+  ) => {
     refs.forEach((ref) => {
       if (ref.current) {
         ref.current!.style.opacity = "1";
@@ -366,7 +481,9 @@ const Intro: React.FC<{
     });
   };
 
-  const handleNoBlur = (refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]) => {
+  const handleNoBlur = (
+    refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]
+  ) => {
     refs.forEach((ref) => {
       if (ref.current) {
         ref.current!.style.filter = "blur(0px)";
@@ -375,7 +492,9 @@ const Intro: React.FC<{
     });
   };
 
-  const setBlur = (refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]) => {
+  const setBlur = (
+    refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]
+  ) => {
     refs.forEach((ref) => {
       if (ref.current) {
         ref.current!.style.filter = "blur(8px)";
@@ -383,13 +502,26 @@ const Intro: React.FC<{
     });
   };
 
-  const setNoBlur = (refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]) => {
+  const setNoBlur = (
+    refs: React.RefObject<HTMLDivElement | HTMLImageElement>[]
+  ) => {
     refs.forEach((ref) => {
       if (ref.current) {
         ref.current!.style.filter = "blur(0px)";
       }
     });
   };
+
+  console.log(
+    "isEighteen:",
+    isEighteen,
+    "isAudio:",
+    isAudio,
+    "progress:",
+    progress,
+    "isSubmitted:",
+    isSubmitted
+  );
 
   return (
     <div>
@@ -418,11 +550,21 @@ const Intro: React.FC<{
       />
       <div
         ref={introContainerRef}
-        className="grid grid-cols-5 grid-rows-4 gap-lg p-lg h-[100vh] w-[100vw] absolute transition-opacity ease-in-out duration-md opacity-100"
+        className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 grid-rows-4 gap-lg p-lg h-[100vh] w-[100vw] absolute transition-opacity ease-in-out duration-md opacity-100"
       >
-        <LogoAnimation isEighteen={isEighteen} isDrift={isDrift} logo={logo} />
-        <div ref={textIntroContainerRef} className="row-start-1 col-start-3 flex flex-col gap-lg transition-all ease-in-out duration-md invisible">
-          <div className="font-serif font-bold text-lg text-white flex justify-center">
+        <LogoAnimation
+          isEighteen={isEighteen}
+          isDrift={isDrift}
+          logo={logo}
+          logoAnimationContainerRef={logoAnimationContainerRef}
+        />
+        <div
+          ref={textIntroContainerRef}
+          className="row-start-1 col-start-1 md:col-start-2 xl:col-start-3 flex flex-col gap-lg transition-all ease-in-out duration-md invisible"
+        >
+          <div
+            className={`font-serif font-bold text-lg text-white flex justify-center ${isEighteen && "opacity-0 md:opacity-100 transition-opacity ease-in-out duration-md"}`}
+          >
             <div>MAROON/</div>
             <div className="scale-x-[-1]">s</div>
           </div>
@@ -431,6 +573,7 @@ const Intro: React.FC<{
 
         <Questions
           completedContainerRef={completedContainerRef}
+          completedMobileContainerRef={completedMobileContainerRef}
           orbContainerRef={orbContainerRef}
           questionsContainerRef={questionsContainerRef}
           categories={categories}
@@ -457,8 +600,12 @@ const Intro: React.FC<{
           setProgress={setProgress}
         />
 
-        <div className="row-start-4 col-start-3 content-end">
-          <AgeVerification setIsEighteen={setIsEighteen} isEighteen={isEighteen} />
+        <div className="row-start-4 col-start-1 md:col-start-2 xl:col-start-3 content-end">
+          <AgeVerification
+            setIsEighteen={setIsEighteen}
+            isEighteen={isEighteen}
+            ageContainerRef={ageContainerRef}
+          />
         </div>
       </div>
     </div>

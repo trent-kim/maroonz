@@ -10,7 +10,12 @@ interface TextCodeProps {
   onComplete?: () => void; // Add onComplete prop
 }
 
-const TextCode: React.FC<TextCodeProps> = ({ textCodeContainerRef, blackCode, speed = 100, onComplete }) => {
+const TextCode: React.FC<TextCodeProps> = ({
+  textCodeContainerRef,
+  blackCode,
+  speed = 100,
+  onComplete,
+}) => {
   const [displayedCodes, setDisplayedCodes] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
@@ -56,24 +61,35 @@ const TextCode: React.FC<TextCodeProps> = ({ textCodeContainerRef, blackCode, sp
         setCurrentIndex(currentIndex + 1);
       }
     }
-  }, [currentCharIndex, currentIndex, blackCode, speed, onComplete, typingStopped]);
+  }, [
+    currentCharIndex,
+    currentIndex,
+    blackCode,
+    speed,
+    onComplete,
+    typingStopped,
+  ]);
 
   useEffect(() => {
     const container = textCodeContainerRef.current;
     if (container) {
       container.scrollTop = container.scrollHeight;
     }
-  }, [displayedCodes]);
+  }, [displayedCodes, textCodeContainerRef]);
 
   return (
     <div
       ref={textCodeContainerRef}
-      className={`row-start-2 col-start-1 overflow-hidden transition-opacity ease-in-out duration-md ${
-        isEnd ? "opacity-0" : "opacity-100"}`}
+      className={`hidden md:block row-start-2 col-start-1 overflow-hidden transition-opacity ease-in-out duration-md ${
+        isEnd ? "opacity-0" : "opacity-100"
+      }`}
     >
       <ul className="space-y-2">
         {displayedCodes.map((code, index) => (
-          <li key={index} className="font-body text-sm text-white whitespace-pre-wrap break-words">
+          <li
+            key={index}
+            className="font-body text-sm text-white whitespace-pre-wrap break-words"
+          >
             {code}
             {index === currentIndex && !typingStopped && (
               <span className="inline-block w-[6px] h-[12px] bg-white animate-caret ml-1"></span>

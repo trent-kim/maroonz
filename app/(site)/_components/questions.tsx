@@ -1,12 +1,20 @@
-"use client"
-import React, { useState, useEffect, useRef, useMemo, useCallback, Dispatch, SetStateAction } from "react";
+"use client";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import QuestionOrb from "./question-orb";
 import QuestionCard from "./question-card";
 import { Category } from "@/types/Category";
 import { Project } from "@/types/Project";
 
 // Define AnimationClass type
-type AnimationClass = 'up-down-one' | 'up-down-two' | 'up-down-three';
+type AnimationClass = "up-down-one" | "up-down-two" | "up-down-three";
 
 interface Preference {
   key: string;
@@ -15,6 +23,7 @@ interface Preference {
 
 interface QuestionsProps {
   completedContainerRef: React.RefObject<HTMLDivElement>;
+  completedMobileContainerRef: React.RefObject<HTMLDivElement>;
   orbContainerRef: React.RefObject<HTMLDivElement>;
   questionsContainerRef: React.RefObject<HTMLDivElement>;
   categories: Category[];
@@ -75,6 +84,7 @@ const getRandomPosition = (
 
 const Questions: React.FC<QuestionsProps> = ({
   completedContainerRef,
+  completedMobileContainerRef,
   orbContainerRef,
   questionsContainerRef,
   categories,
@@ -126,28 +136,8 @@ const Questions: React.FC<QuestionsProps> = ({
     }
   }, []);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("preferences", JSON.stringify(preferences));
-    }
-
-    if (pendingSubmit) {
-      handleSubmit();
-    }
-  }, [preferences]);
-
-  useEffect(() => {
-    const container = orbContainerRef.current;
-    if (container) {
-      const boundingRect = container.getBoundingClientRect();
-      setContainerSize({
-        width: boundingRect.width,
-        height: boundingRect.height,
-      });
-    }
-  }, []);
-
-  useEffect(() => {
+  // Function to calculate positions based on the current container size
+  const calculatePositions = useCallback(() => {
     const orbWidth = 24;
     const orbHeight = 24;
     const newPositions: Position[] = [];
@@ -166,11 +156,52 @@ const Questions: React.FC<QuestionsProps> = ({
     });
 
     setPositions(newPositions);
-  }, [containerSize, categories]);
+  }, [containerSize.width, containerSize.height, categories]);
+
+  // Get the container size initially
+  useEffect(() => {
+    const container = orbContainerRef.current;
+    if (container) {
+      const boundingRect = container.getBoundingClientRect();
+      setContainerSize({
+        width: boundingRect.width,
+        height: boundingRect.height,
+      });
+    }
+  }, [orbContainerRef]);
+
+  // Calculate positions whenever the container size changes or categories change
+  useEffect(() => {
+    calculatePositions();
+  }, [containerSize, categories, calculatePositions]);
+
+  // Handle window resize to recalculate the container size and positions
+  useEffect(() => {
+    const handleResize = () => {
+      const container = orbContainerRef.current;
+      if (container) {
+        const boundingRect = container.getBoundingClientRect();
+        setContainerSize({
+          width: boundingRect.width,
+          height: boundingRect.height,
+        });
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [orbContainerRef]);
 
   // Assign animation classes only on the first render
   useEffect(() => {
-    const classes: AnimationClass[] = ['up-down-one', 'up-down-two', 'up-down-three'];
+    const classes: AnimationClass[] = [
+      "up-down-one",
+      "up-down-two",
+      "up-down-three",
+    ];
     animationClasses.current = categories.map(
       () => classes[Math.floor(Math.random() * classes.length)]
     );
@@ -179,13 +210,16 @@ const Questions: React.FC<QuestionsProps> = ({
   // Store filteredProjects in sessionStorage whenever it updates
   useEffect(() => {
     if (filteredProjects.length > 0) {
-      sessionStorage.setItem("filteredProjects", JSON.stringify(filteredProjects));
+      sessionStorage.setItem(
+        "filteredProjects",
+        JSON.stringify(filteredProjects)
+      );
     }
   }, [filteredProjects]);
 
   const handlePreferenceChange = useCallback(
     (key: string, index: number, value: boolean, isLast: boolean = false) => {
-      console.log('Value:', value)
+      console.log("Value:", value);
       setPreferences((prev) => {
         const updatedPreferences = [...prev];
         const preferenceIndex = updatedPreferences.findIndex(
@@ -223,9 +257,6 @@ const Questions: React.FC<QuestionsProps> = ({
   const handleSubmit = useCallback(() => {
     setPendingSubmit(false); // Reset the flag
 
-    console.log("Preferences:", preferences);
-    console.log("Categories:", categories);
-
     // Step 1: Filter categories based on preferences
     const filteredCategories = categories
       .filter((category, index) => preferences[index].value)
@@ -239,12 +270,10 @@ const Questions: React.FC<QuestionsProps> = ({
     // Step 2: Filter projects based on the filtered categories
     const filteredProjects = projects.filter((project) => {
       // Check if the project has any of the filtered categories
-      return project.categories.some((category) =>
+      return project.categories.every((category) =>
         filteredCategories.includes(category)
       );
     });
-
-    console.log("Filtered Projects:", filteredProjects);
 
     if (filteredProjects.length === 0) {
       console.warn("No projects matched the preferences.");
@@ -256,7 +285,6 @@ const Questions: React.FC<QuestionsProps> = ({
 
     setFilteredProjects(filteredProjects);
     setVisibleProjects(selectedProjects);
-    
 
     questionRefs[currentQuestionIndex].current!.style.opacity = "0";
     orbRefs[prevOrbIndex].current!.style.opacity = "0";
@@ -264,17 +292,12 @@ const Questions: React.FC<QuestionsProps> = ({
     setIsQuestionsEnd(false);
     setIsQuestions(false);
 
-
-
     setTimeout(() => {
       questionRefs[currentQuestionIndex].current!.style.visibility = "hidden";
       orbRefs[prevOrbIndex].current!.style.visibility = "hidden";
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      
-
     }, 3000);
     setIsSubmitted(true);
-    console.log("Selected projects to display:", selectedProjects);
   }, [
     preferences,
     projects,
@@ -285,12 +308,21 @@ const Questions: React.FC<QuestionsProps> = ({
     prevOrbIndex,
     setIsSubmitted,
     setIsQuestions,
-    setIsQuestionsEnd
+    setIsQuestionsEnd,
   ]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("preferences", JSON.stringify(preferences));
+    }
+
+    if (pendingSubmit) {
+      handleSubmit();
+    }
+  }, [handleSubmit, preferences, pendingSubmit]);
 
   const handleNextQuestion = useCallback(
     (orbIndex: number) => {
-      console.log('Index', orbIndex)
       setIsQuestions(true);
       const newOrbList = currentOrbList.filter((item) => item !== orbIndex);
 
@@ -302,8 +334,8 @@ const Questions: React.FC<QuestionsProps> = ({
         setPrevOrbIndex(orbIndex);
         orbRefs[orbIndex].current!.style.color = "#000000";
         orbRefs[orbIndex].current!.style.backgroundColor = "#FFFFFF";
-        orbRefs[orbIndex].current!.style.boxShadow = '0px 0px 6px 3px #FFFFFF';
-        
+        // orbRefs[orbIndex].current!.style.boxShadow = '0px 0px 6px 3px #FFFFFF';
+
         setIsSelected(true);
 
         setCurrentOrbList(newOrbList);
@@ -311,10 +343,9 @@ const Questions: React.FC<QuestionsProps> = ({
         questionRefs[currentQuestionIndex].current!.style.opacity = "0";
 
         orbRefs[prevOrbIndex].current!.style.opacity = "0";
-        orbRefs[orbIndex].current!.style.boxShadow = 'none';
+        // orbRefs[orbIndex].current!.style.boxShadow = 'none';
         setIsSelected(false);
         setIsQuestions(false);
-
 
         setTimeout(() => {
           setIsQuestions(true);
@@ -329,61 +360,84 @@ const Questions: React.FC<QuestionsProps> = ({
           orbRefs[prevOrbIndex].current!.style.visibility = "hidden";
           orbRefs[orbIndex].current!.style.color = "#000000";
           orbRefs[orbIndex].current!.style.backgroundColor = "#FFFFFF";
-          orbRefs[orbIndex].current!.style.boxShadow = '0px 0px 6px 3px #FFFFFF';
-          
+          // orbRefs[orbIndex].current!.style.boxShadow = '0px 0px 6px 3px #FFFFFF';
+
           setPrevOrbIndex(orbIndex);
           setCurrentOrbList(newOrbList);
         }, 3000);
       }
     },
     [
+      prevOrbIndex,
       currentQuestionIndex,
       isSelected,
       currentOrbList,
       questionRefs,
       orbRefs,
       categories.length,
-      setIsQuestions
+      setIsQuestions,
     ]
   );
 
   return (
     <>
-      <div ref={completedContainerRef} className="row-start-2 col-start-1 invisible opacity-0 transition-all ease-in-out duration-md">
-        <div className="flex justify-end">
+      <div
+        ref={completedContainerRef}
+        className="hidden md:block row-start-2 col-start-1 invisible opacity-0 transition-all ease-in-out duration-md"
+      >
+        <div className="flex md:justify-end">
           <span className="font-body text-sm text-white">
-            Questions Completed<br></br>{currentQuestionIndex}/{categories.length}
+            Questions Completed<br></br>
+            {currentQuestionIndex}/{categories.length}
           </span>
         </div>
       </div>
-      <div
-        ref={orbContainerRef}
-        className="row-start-2 row-span-2 col-start-2 col-span-3 relative invisible opacity-0 transition-opacity ease-in-out duration-md"
-      >
-        {positions.map((position, index) => (
-          <QuestionOrb
-            key={index}
-            position={position}
-            orbRef={orbRefs[index]}
-            onClick={() => 
-              (currentQuestionIndex === 0 && !isSelected)
-                ? handleNextQuestion(index) 
-                : null   
-            }
-            animationClass={animationClasses.current[index]} // Correctly typed animation class
-            isSelected={isSelected}
-          />
-        ))}
+      <div className="flex flex-col row-start-2 row-span-2 col-start-1 col-span-1 md:col-start-2 md:col-span-1 xl:col-start-2 xl:col-span-3">
+        <div
+          ref={completedMobileContainerRef}
+          className="flex md:hidden invisible opacity-0 transition-all ease-in-out duration-md"
+        >
+          <span className="font-body text-sm text-white">
+            Questions Completed<br></br>
+            {currentQuestionIndex}/{categories.length}
+          </span>
+        </div>
+        <div
+          ref={orbContainerRef}
+          className="w-full h-full invisible opacity-0 transition-opacity ease-in-out duration-md relative"
+        >
+          {positions.map((position, index) => (
+            <QuestionOrb
+              key={index}
+              position={position}
+              orbRef={orbRefs[index]}
+              onClick={() =>
+                currentQuestionIndex === 0 && !isSelected
+                  ? handleNextQuestion(index)
+                  : null
+              }
+              animationClass={animationClasses.current[index]} // Correctly typed animation class
+              isSelected={isSelected}
+            />
+          ))}
+        </div>
       </div>
-      <div ref={questionsContainerRef} className="row-start-3 col-start-5 content-end invisible opacity-0 transition-opacity ease-in-out duration-md">
+      <div
+        ref={questionsContainerRef}
+        className="row-start-4 md:row-start-3 col-start-1 md:col-start-3 xl:col-start-5 content-end invisible opacity-0 transition-opacity ease-in-out duration-md z-10"
+      >
         <div className="relative">
           {categories.map(({ question }, index) => (
             <QuestionCard
               key={index}
               question={question}
-              isSelected={isSelected}
               onPreferenceChange={(value) =>
-                handlePreferenceChange(`${index}`, index, value, index === categories.length - 1)
+                handlePreferenceChange(
+                  `${index}`,
+                  index,
+                  value,
+                  index === categories.length - 1
+                )
               }
               onNext={() =>
                 handleNextQuestion(

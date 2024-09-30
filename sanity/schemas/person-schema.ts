@@ -1,3 +1,5 @@
+import { Rule } from '@sanity/types';
+
 const person = {
 
     name: 'person',
@@ -7,7 +9,9 @@ const person = {
         {
             name: 'name',
             title: 'Name',
-            type: 'string'
+            type: 'string',
+            description: "Person's first and last name",
+            validation: (rule: Rule) => rule.required(),
         },
         {
             name: 'website',

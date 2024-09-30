@@ -1,7 +1,14 @@
 // experience.tsx
 
 "use client";
-import React, { useEffect, useRef, useState, useCallback, RefObject, SetStateAction } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  RefObject,
+  SetStateAction,
+} from "react";
 import { usePathname, useRouter } from "next/navigation"; // Import useRouter
 import MuxPlayer from "@mux/mux-player-react";
 import { Project } from "@/types/Project";
@@ -23,7 +30,12 @@ interface ExperienceProps {
   logo: Logo[];
 }
 
-const Experience: React.FC<ExperienceProps> = ({ projects, categories, blackCode, logo }) => {
+const Experience: React.FC<ExperienceProps> = ({
+  projects,
+  categories,
+  blackCode,
+  logo,
+}) => {
   const experienceContainerRef = useRef<HTMLDivElement>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const progressRefs = useRef<Array<RefObject<HTMLDivElement>>>([]);
@@ -41,7 +53,13 @@ const Experience: React.FC<ExperienceProps> = ({ projects, categories, blackCode
   const [isExperience, setIsExperience] = useState(false);
   const [hasTextProject, setHasTextProject] = useState(false);
   const [isLastVideoEnded, setIsLastVideoEnded] = useState(false); // Track if the last video has ended
-  const [isExperienceEnd, setIsExperienceEnd] = useState(false);
+  const [isExperienceEnd, setIsExperienceEnd] = useState(() => {
+    if (typeof window !== "undefined") {
+      const savedIsExperienceEnd = sessionStorage.getItem("isExperienceEnd");
+      return savedIsExperienceEnd ? JSON.parse(savedIsExperienceEnd) : false;
+    }
+    return false;
+  });
   const [isDriftToHome, setIsDriftToHome] = useState(() => {
     if (typeof window !== "undefined") {
       const savedIsDriftToHome = sessionStorage.getItem("isDriftToHome");
@@ -62,17 +80,20 @@ const Experience: React.FC<ExperienceProps> = ({ projects, categories, blackCode
       sessionStorage.setItem("isDriftToHome", JSON.stringify(isDriftToHome));
     }
     if (typeof window !== "undefined") {
-        sessionStorage.setItem("isDriftToA", JSON.stringify(isDriftToA));
+      sessionStorage.setItem("isDriftToA", JSON.stringify(isDriftToA));
     }
-  }, [isDriftToHome, isDriftToA]);
-
-  
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(
+        "isExperienceEnd",
+        JSON.stringify(isExperienceEnd)
+      );
+    }
+  }, [isDriftToHome, isDriftToA, isExperienceEnd]);
 
   const transitionDuration = 3000; // Duration of the fade-out in milliseconds
 
   const router = useRouter(); // Use the useRouter hook for navigation
   const pathname = usePathname(); // Get the current path
-
 
   const { setVisibleContainers } = useVisibility();
 
@@ -86,7 +107,9 @@ const Experience: React.FC<ExperienceProps> = ({ projects, categories, blackCode
         setIsVisible(new Array(parsedProjects.length).fill(false));
         progressRefs.current = parsedProjects.map(() => React.createRef());
         progressBarRefs.current = parsedProjects.map(() => React.createRef());
-        progressBarContainerRefs.current = parsedProjects.map(() => React.createRef());
+        progressBarContainerRefs.current = parsedProjects.map(() =>
+          React.createRef()
+        );
       }
     }
   }, []);
@@ -97,7 +120,7 @@ const Experience: React.FC<ExperienceProps> = ({ projects, categories, blackCode
       barVideoContainerRef: isProject,
       textProjectContainerRef: hasTextProject,
     });
-  }, [isTextCode, isProject, setVisibleContainers]);
+  }, [isTextCode, isProject, hasTextProject, setVisibleContainers]);
 
   const handleTimeUpdate = (index: number) => {
     if (progressBarRefs.current[index]?.current) {
@@ -112,7 +135,10 @@ const Experience: React.FC<ExperienceProps> = ({ projects, categories, blackCode
       });
 
       // Trigger fade-out at the last few seconds
-      if (duration - currentTime <= transitionDuration / 1000 && isVisible[index]) {
+      if (
+        duration - currentTime <= transitionDuration / 1000 &&
+        isVisible[index]
+      ) {
         setIsVisible((prevVisible) => {
           const newVisible = [...prevVisible];
           newVisible[index] = false;
@@ -127,8 +153,6 @@ const Experience: React.FC<ExperienceProps> = ({ projects, categories, blackCode
   const handleVideoEnd = useCallback(() => {
     const nextIndex = currentVideoIndex + 1;
     if (nextIndex < selectedProjects.length) {
-      
-
       setTimeout(() => {
         setCurrentVideoIndex(nextIndex);
 
@@ -159,23 +183,20 @@ const Experience: React.FC<ExperienceProps> = ({ projects, categories, blackCode
     setIsTextCode(false);
     setIsExperience(false);
     setIsExperienceEnd(true);
-    sessionStorage.setItem('prevPathname', pathname);
     if (isDriftToHome) {
-        setTimeout(() => {
-            router.push("/");
-        }, 3000);
+      setTimeout(() => {
+        router.push("/");
+      }, 3000);
     } else {
-        setIsDriftToA(true);
-        mapContainerRef.current!.style.visibility = "hidden";
-        mapContainerRef.current!.style.opacity = "0";
-        mapContainerRef.current!.style.transition = `all 3000ms ease-in-out`;
+      setIsDriftToA(true);
+      mapContainerRef.current!.style.visibility = "hidden";
+      mapContainerRef.current!.style.opacity = "0";
+      mapContainerRef.current!.style.transition = `all 3000ms ease-in-out`;
 
-        setTimeout(() => {
-            router.push("/archive"); // Redirect to the archive page
-        
-        }, 3000);
+      setTimeout(() => {
+        router.push("/archive"); // Redirect to the archive page
+      }, 3000);
     }
-    
   }, [router, isDriftToHome]);
 
   const fadeOutAndComplete = useCallback(() => {
@@ -188,8 +209,7 @@ const Experience: React.FC<ExperienceProps> = ({ projects, categories, blackCode
       setHasTextProject(false);
       return newVisible;
     });
-    
-  }, [currentVideoIndex, transitionDuration]);
+  }, [currentVideoIndex]);
 
   useEffect(() => {
     mapContainerRef.current!.style.visibility = "visible";
@@ -291,13 +311,17 @@ const Experience: React.FC<ExperienceProps> = ({ projects, categories, blackCode
         ))}
       <div
         ref={experienceContainerRef}
-        className="grid grid-cols-5 grid-rows-4 gap-lg p-lg h-[100vh] w-[100vw] absolute"
+        className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 grid-rows-4 gap-lg p-lg h-[100vh] w-[100vw] absolute"
       >
         <TextCode
           textCodeContainerRef={textCodeContainerRef}
           blackCode={blackCode}
           speed={150}
-          onComplete={isLastVideoEnded || isDriftToHome ? handleTextCodeComplete : undefined} // Pass the callback to the TextCode component
+          onComplete={
+            isLastVideoEnded || isDriftToHome
+              ? handleTextCodeComplete
+              : undefined
+          } // Pass the callback to the TextCode component
         />
         {selectedProjects.length > 0 &&
           selectedProjects.map((project, index) => (
@@ -314,7 +338,9 @@ const Experience: React.FC<ExperienceProps> = ({ projects, categories, blackCode
                 setProgresses((prev) => {
                   const newProgresses = [...prev];
                   newProgresses[index] =
-                    typeof value === "function" ? value(newProgresses[index]) : value;
+                    typeof value === "function"
+                      ? value(newProgresses[index])
+                      : value;
                   return newProgresses;
                 })
               }

@@ -10,6 +10,8 @@ const position = {
         name: 'title',
         title: 'Title',
         type: 'string',
+        description: 'Position title',
+        validation: (rule: Rule) => rule.required(),
       },
       {
         name: 'number',
@@ -22,7 +24,8 @@ const position = {
         name: 'people',
         title: 'Person/People',
         type: 'array',
-        of: [{type: 'reference', to: {type: 'person'}}]
+        of: [{type: 'reference', to: {type: 'person'}}],
+        validation: (rule: Rule) => rule.required()
       },
     ]
 }

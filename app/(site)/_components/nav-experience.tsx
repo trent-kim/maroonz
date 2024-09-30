@@ -1,10 +1,9 @@
 "use client";
 
 import { Project } from "@/types/Project";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Logo } from "@/types/Logo";
-import Link from "next/link";
 
 interface NavExperienceProps {
   logo: Logo[];
@@ -57,41 +56,42 @@ const NavExperience: React.FC<NavExperienceProps> = ({
 
   return (
     <div className="absolute top-lg left-lg z-20">
-    <div className="flex gap-lg items-center">
-    
-      <Image
-        // ref={logoRef}
-        onClick={fadeOutAndComplete} // Trigger fade-out and completion
-        src={logo[0].image}
-        width={58}
-        height={58}
-        className={`transition-opacity ease-in-out duration-md cursor-pointer`}
-        alt=""
-      />
-    
-    {/* <div className="absolute top-lg left-lg z-20"> */}
-      <div className={`flex gap-md p-md border border-white rounded transition-all ease-in-out duration-md ${
-      isExperience ? 'opacity-100' : 'opacity-0'
-    }`}>
-        {selectedProjects.map((_, index) => (
-          <button
-            key={index}
-            className={getButtonClassNames(index)}
-            onClick={() => setCurrentVideoIndex(index)}
-            onMouseEnter={() => handleMouseEnter(index)}
-            onMouseLeave={handleMouseLeave}
-          >
-            {index + 1}
-          </button>
-        ))}
-        <button
-          className="font-serif text-md text-white p-2 hover:text-shadow-glow transition-text-shadow ease-in-out duration-sm"
-          onClick={togglePlayPause}
+      <div className="flex gap-lg items-center">
+        <Image
+          // ref={logoRef}
+          onClick={fadeOutAndComplete} // Trigger fade-out and completion
+          src={logo[0].image}
+          width={58}
+          height={58}
+          className={`transition-opacity ease-in-out duration-md cursor-pointer`}
+          alt=""
+        />
+
+        {/* <div className="absolute top-lg left-lg z-20"> */}
+        <div
+          className={`flex gap-md p-md border border-white rounded transition-all ease-in-out duration-md ${
+            isExperience ? "opacity-100" : "opacity-0"
+          }`}
         >
-          {isPlaying ? "Pause" : "Play"}
-        </button>
+          {selectedProjects.map((_, index) => (
+            <button
+              key={index}
+              className={getButtonClassNames(index)}
+              onClick={() => setCurrentVideoIndex(index)}
+              onMouseEnter={() => handleMouseEnter(index)}
+              onMouseLeave={handleMouseLeave}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            className="font-serif text-md text-white p-2 hover:text-shadow-glow transition-text-shadow ease-in-out duration-sm"
+            onClick={togglePlayPause}
+          >
+            {isPlaying ? "Pause" : "Play"}
+          </button>
+        </div>
       </div>
-    </div>
     </div>
   );
 };

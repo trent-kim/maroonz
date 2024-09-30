@@ -105,21 +105,21 @@ const Map: React.FC<{
   // }, [pathname, isTransitioning]);
 
   const containerMap = {
-    textIntroContainerRef: "row-start-1 col-start-3",
+    textIntroContainerRef: "row-start-1 col-start-1 md:col-start-2 xl:col-start-3",
     progressBarContainerRef: "row-start-3 col-start-1",
-    driftContainerRef: "row-start-4 col-start-3",
+    driftContainerRef: "row-start-4 col-start-1 md:col-start-2 xl:col-start-3",
     completedContainerRef: "row-start-2 col-start-1",
-    orbContainerRef: "row-start-2 row-span-2 col-start-2 col-span-3",
-    questionsContainerRef: "row-start-3 col-start-5",
+    orbContainerRef: "row-start-2 row-span-2 col-start-1 col-span-1 md:col-start-2 md:col-span-1 xl:col-start-2 xl:col-span-3",
+    questionsContainerRef: "row-start-3 col-start-1 md:col-start-3 xl:col-start-5",
     barVideoContainerRef: "row-start-3 col-start-1",
     textCodeContainerRef: "row-start-2 col-start-1",
-    textProjectContainerRef: "row-start-2 row-span-2 col-start-5",
+    textProjectContainerRef: "row-start-2 row-span-2 col-start-1 md:col-start-3 xl:col-start-5",
   };
 
   return (
     <div
       ref={mapContainerRef}
-      className={`absolute top-lg right-lg flex flex-col items-end gap-md invisible`}
+      className={`absolute top-lg right-lg hidden md:flex flex-col items-end gap-md invisible`}
     >
       <div
         ref={mapRef}
@@ -132,7 +132,7 @@ const Map: React.FC<{
         onMouseLeave={() => setHoverText(isVisible ? "Hide" : "Show")}
         onClick={handleToggleVisibility} // Toggle visibility on click, only on the mapRef div
       >
-        <div className="absolute h-full w-full grid grid-cols-5 grid-rows-4 gap-sm p-sm transition-all ease-in-out duration-sm group-hover:blur">
+        <div className="absolute h-full w-full grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 grid-rows-4 gap-sm p-sm transition-all ease-in-out duration-sm group-hover:blur">
           {Object.entries(containerMap).map(([refName, gridClass]) => (
             <div
               key={refName}

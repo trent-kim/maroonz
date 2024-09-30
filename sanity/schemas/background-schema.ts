@@ -1,3 +1,5 @@
+import { Rule } from '@sanity/types';
+
 const background = {
 
     name: 'background',
@@ -7,12 +9,15 @@ const background = {
         {
             name: 'title',
             title: 'Title',
-            type: 'string'
+            type: 'string',
+            description: 'For version history organization only (not displayed on website)',
+            validation: (rule: Rule) => rule.required(),
         },
         {
             name: 'video',
             title: 'Video',
-            type: 'mux.video'
+            type: 'mux.video',
+            validation: (rule: Rule) => rule.required(),
         },
 
 
