@@ -219,7 +219,6 @@ const Questions: React.FC<QuestionsProps> = ({
 
   const handlePreferenceChange = useCallback(
     (key: string, index: number, value: boolean, isLast: boolean = false) => {
-      console.log("Value:", value);
       setPreferences((prev) => {
         const updatedPreferences = [...prev];
         const preferenceIndex = updatedPreferences.findIndex(
@@ -231,8 +230,6 @@ const Questions: React.FC<QuestionsProps> = ({
         } else {
           updatedPreferences.push({ key, value });
         }
-
-        console.log("Preferences on Change:", updatedPreferences);
 
         // If it's the last question, set the flag to trigger submission
         if (isLast) {
@@ -261,11 +258,6 @@ const Questions: React.FC<QuestionsProps> = ({
     const filteredCategories = categories
       .filter((category, index) => preferences[index].value)
       .map((category) => category.category);
-
-    console.log(
-      "Filtered Categories based on Preferences:",
-      filteredCategories
-    );
 
     // Step 2: Filter projects based on the filtered categories
     const filteredProjects = projects.filter((project) => {

@@ -77,7 +77,6 @@ const DriftMarquee: React.FC<{
   const handleDriftClick = () => {
     if (typeof window !== "undefined") {
       const savedFilteredProjects = sessionStorage.getItem("filteredProjects");
-      // console.log("FilteredProjects:", savedFilteredProjects);
       setIsExperienceEnd(false);
       sessionStorage.setItem("isExperienceEnd", JSON.stringify(false));
       setIsDrift(true);

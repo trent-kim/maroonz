@@ -482,7 +482,6 @@ const ArchiveContainer: React.FC<{
       };
     }, [isSelected, prevOrbIndex, orbRefs, selectedProjectRefs]);
   
-    console.log(projects);
     return (
         <div>
         <NavHome

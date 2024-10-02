@@ -99,6 +99,7 @@ const Intro: React.FC<{
   const [isNavClicked, setIsNavClicked] = useState(false);
   const [isDriftToHome, setIsDriftToHome] = useState(false);
 
+  // Controls for visibility within map
   useEffect(() => {
     const savedIsDriftToHome = sessionStorage.getItem("isDriftToHome");
     if (savedIsDriftToHome) {
@@ -226,7 +227,7 @@ const Intro: React.FC<{
           sessionStorage.setItem("isAToHome", JSON.stringify(false));
         }, fadeDuration);
       } else {
-        handleVisible([textIntroContainerRef]);
+        handleVisible([textIntroContainerRef, ageContainerRef, logoAnimationContainerRef]);
       }
     };
 
@@ -273,7 +274,7 @@ const Intro: React.FC<{
 
     // Initial check on mount
     handleRouteChange(pathname);
-    
+
     if (savedIsAToHome === "true" || savedIsDriftToHome === "true") {
       if (isSubmitted) {
         if (savedIsDriftToHome === "true") {
