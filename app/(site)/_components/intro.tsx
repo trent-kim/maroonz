@@ -392,6 +392,7 @@ const Intro: React.FC<{
         };
       } else {
         return () => {
+          console.log("it worked");
           setVisible([ageContainerRef, logoAnimationContainerRef]);
           setInvisible([
             navHomeContainerRef,
