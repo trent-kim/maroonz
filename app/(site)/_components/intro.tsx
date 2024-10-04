@@ -227,7 +227,9 @@ const Intro: React.FC<{
           sessionStorage.setItem("isAToHome", JSON.stringify(false));
         }, fadeDuration);
       } else {
-        handleVisible([textIntroContainerRef, ageContainerRef, logoAnimationContainerRef]);
+        setVisible([textIntroContainerRef, ageContainerRef, logoAnimationContainerRef]);
+        setInvisible([backgroundContainerRef]);
+
       }
     };
 
