@@ -108,7 +108,7 @@ const Intro: React.FC<{
 
     if (!isSubmitted) {
       setVisibleContainers({
-        textIntroContainerRef: !isDrift,
+        textIntroContainerRef: isEighteen && !isDrift,
         progressBarContainerRef: 0 < progress && progress < 100,
         driftContainerRef: isEighteen && !isDrift,
         completedContainerRef: isAudio,
@@ -392,7 +392,6 @@ const Intro: React.FC<{
         };
       } else {
         return () => {
-          console.log("it worked");
           setVisible([ageContainerRef, logoAnimationContainerRef]);
           setInvisible([
             navHomeContainerRef,
@@ -527,7 +526,7 @@ const Intro: React.FC<{
 
   return (
     <div>
-      <div ref={backgroundContainerRef} className="">
+      <div ref={backgroundContainerRef} className="invisible">
         <MuxPlayer
           playbackId={background[0].video}
           muted
