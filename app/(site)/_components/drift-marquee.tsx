@@ -35,7 +35,7 @@ const DriftMarquee: React.FC<{
     const savedIsDriftToHome = sessionStorage.getItem("isDriftToHome");
     const savedIsAToHome = sessionStorage.getItem("isAToHome");
 
-    if (savedIsAToHome === "true" || savedIsDriftToHome === "true") {
+    if (savedIsAToHome === "true" || savedIsDriftToHome === "true" || isEighteen) {
       // Assume fade-in duration matches Tailwind's transition duration
       const fadeInTimeout = setTimeout(() => {
         setIsFadedIn(true); // Mark that the fade-in is complete
@@ -47,7 +47,7 @@ const DriftMarquee: React.FC<{
       setIsFadedIn(true); // Mark that the fade-in is complete
       setCurrentIndex(0); // Start displaying the first item
     }
-  }, []);
+  }, [isEighteen]);
 
   useEffect(() => {
     const interval = setInterval(() => {
