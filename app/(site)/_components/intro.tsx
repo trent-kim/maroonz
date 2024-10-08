@@ -214,6 +214,8 @@ const Intro: React.FC<{
           sessionStorage.setItem("isAToHome", JSON.stringify(false));
         }, fadeDuration);
       } else if (isEighteen) {
+        setVisible([navHomeContainerRef])
+
         setTimeout(() => {
           handleVisible([
             navHomeContainerRef,
