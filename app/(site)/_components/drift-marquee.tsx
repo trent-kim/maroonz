@@ -117,7 +117,7 @@ const DriftMarquee: React.FC<{
           <div
             key={index}
             className={`font-serif text-md text-white translate-x-[-20%] animate-marquee 
-              ${isFadedIn && isEighteen && currentIndex === index ? "visible" : "invisible"} ${isSubmitted ? "blur-none" : "blur"}`}
+              ${isEighteen && isFadedIn && currentIndex === index ? "visible" : "invisible"} ${isSubmitted ? "blur-none" : "blur"}`}
             style={{
               transition: "filter 3000ms ease-in-out",
               transitionDelay: "3000ms",
