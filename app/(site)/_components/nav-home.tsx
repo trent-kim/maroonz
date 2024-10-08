@@ -71,7 +71,7 @@ const NavHome: React.FC<{
           </div>
           <div
             ref={archiveButtonRef}
-            className={`font-serif text-md text-white blur`}
+            className={`font-serif text-md text-white`}
           >
             {isSubmitted ? (
               <span

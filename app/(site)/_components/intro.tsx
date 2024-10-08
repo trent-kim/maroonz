@@ -190,7 +190,7 @@ const Intro: React.FC<{
         } else {
           handleNoBlur([archiveButtonRef]);
           setTimeout(() => {
-            // handleVisible([navHomeContainerRef, logoRef, mapContainerRef, backgroundContainerRef, textIntroContainerRef, driftContainerRef]);
+            handleVisible([navHomeContainerRef, logoRef, mapContainerRef, backgroundContainerRef, textIntroContainerRef, driftContainerRef]);
             sessionStorage.setItem("isAToHome", JSON.stringify(false));
           }, fadeDuration);
         }
@@ -341,13 +341,6 @@ const Intro: React.FC<{
       }
     } else {
       if (isSubmitted) {
-        if (isDriftToHome) {
-          return () => {
-            handleUnhidden([driftContainerRef]);
-            handleInvisible([progressBarContainerRef, orbContainerRef]);
-            setNoBlur([archiveButtonRef]);
-          };
-        } else {
           return () => {
             handleUnhidden([driftContainerRef]);
             handleInvisible([progressBarContainerRef, orbContainerRef]);
@@ -360,8 +353,7 @@ const Intro: React.FC<{
               textIntroContainerRef,
             ]);
             setBlur([archiveButtonRef]);
-          };
-        }
+          }; 
       } else if (isAudio) {
         return () => {
           handleInvisible([progressBarContainerRef]);
