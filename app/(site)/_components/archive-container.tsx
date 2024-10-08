@@ -184,8 +184,9 @@ const ArchiveContainer: React.FC<{
             }, fadeDuration);
    
             } else {
+              setVisible([navHomeContainerRef, logoRef]);
               setTimeout(() => {
-              handleVisible([navHomeContainerRef, logoRef, archiveContainerRef]);
+              handleVisible([archiveContainerRef]);
             }, fadeDuration);
             }
         }
@@ -419,13 +420,13 @@ const ArchiveContainer: React.FC<{
           selectedProjectRefs[orbIndex].current!.style.textShadow =
             "0px 0px 1px #FFFFFF, 0px 0px 2px #FFFFFF, 0px 0px 3px #FFFFFF, 0px 0px 6px #FFFFFF";
         // }
-        if (orbIndex !== prevOrbIndex) {
+        // if (orbIndex !== prevOrbIndex) {
         setIsFading(true);
         setTimeout(() => {
           setActiveImageIndex(orbIndex);
           setIsFading(false);
         }, 3000);
-        }
+        // }
 
         // Set the flag before programmatic scroll
         isProgrammaticScroll.current = true;
@@ -544,16 +545,18 @@ const ArchiveContainer: React.FC<{
             const isFiltered = filteredProjects.some(
               (filteredProject) => filteredProject.title === project.title
             );
-  
-            const refIndex = filteredProjects.findIndex(
-              (filteredProject) => filteredProject.title === project.title
+          
+            // Find the matching index in selectedProjects
+            const selectedProjectIndex = selectedProjects.findIndex(
+              (selectedProject) => selectedProject.title === project.title
             );
-            const projectRef = isFiltered ? selectedProjectRefs[refIndex] : null;
-  
+          
+            // If the project is in selectedProjects, use its ref
+            const projectRef = selectedProjectIndex !== -1 ? selectedProjectRefs[selectedProjectIndex] : null;
             return (
               <div
                 key={index}
-                ref={projectRef}
+                ref={projectRef} // This will apply to projects in selectedProjects
                 className={`font-serif text-md text-white flex gap-lg pb-md last:pb-[0px] ${
                   isFiltered ? "" : "blur"
                 }`}

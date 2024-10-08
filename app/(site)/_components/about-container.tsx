@@ -92,6 +92,7 @@ const AboutContainer: React.FC<{
       sessionStorage.setItem('isAToHome', JSON.stringify(true));
 
         const handleRouteChange = (url: string) => {
+          setVisible([navHomeContainerRef]);
               setTimeout(() => {
               handleVisible([navHomeContainerRef, logoRef, aboutContainerRef]);
             }, fadeDuration);

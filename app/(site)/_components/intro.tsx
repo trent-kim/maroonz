@@ -255,7 +255,7 @@ const Intro: React.FC<{
       handleInvisible([progressBarContainerRef]);
     }
 
-    if (isSubmitted) {
+    if (isSubmitted && !savedIsAToHome) {
       handleUnhidden([driftContainerRef]);
       handleInvisible([orbContainerRef]);
       setTimeout(() => {
