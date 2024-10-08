@@ -93,6 +93,8 @@ const AboutContainer: React.FC<{
 
         const handleRouteChange = (url: string) => {
           setVisible([navHomeContainerRef]);
+          setNoBlur([archiveButtonRef]);
+
               setTimeout(() => {
               handleVisible([navHomeContainerRef, logoRef, aboutContainerRef]);
             }, fadeDuration);

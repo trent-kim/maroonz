@@ -184,6 +184,7 @@ const ArchiveContainer: React.FC<{
             }, fadeDuration);
    
             } else {
+              setNoBlur([archiveButtonRef]);
               setVisible([navHomeContainerRef, logoRef]);
               setTimeout(() => {
               handleVisible([archiveContainerRef]);
@@ -520,7 +521,7 @@ const ArchiveContainer: React.FC<{
               src={project.image}
               width={500}
               height={500}
-              className={`h-full w-auto absolute transition-opacity ease-in-out duration-md ${
+              className={`h-full w-auto absolute transition-opacity ease-in-out duration-md object-cover ${
                 index === activeImageIndex
                   ? isFading
                     ? "opacity-0"
