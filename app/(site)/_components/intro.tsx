@@ -158,7 +158,6 @@ const Intro: React.FC<{
     if (savedIsDriftToHome) {
       setIsDriftToHome(JSON.parse(savedIsDriftToHome));
     }
-
     const handleRouteChange = (url: string) => {
       if (isSubmitted) {
         if (savedIsDriftToHome === "true") {
@@ -176,6 +175,7 @@ const Intro: React.FC<{
             sessionStorage.setItem("isDriftToHome", JSON.stringify(false));
           }, fadeDuration);
         } else if (savedIsAToHome === "true") {
+          setVisible([navHomeContainerRef])
           setTimeout(() => {
             handleVisible([
               navHomeContainerRef,
@@ -255,7 +255,7 @@ const Intro: React.FC<{
       handleInvisible([progressBarContainerRef]);
     }
 
-    if (isSubmitted && !savedIsAToHome) {
+    if (isSubmitted) {
       handleUnhidden([driftContainerRef]);
       handleInvisible([orbContainerRef]);
       setTimeout(() => {
