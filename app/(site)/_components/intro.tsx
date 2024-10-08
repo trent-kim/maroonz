@@ -589,6 +589,7 @@ const Intro: React.FC<{
         <DriftMarquee
           driftContainerRef={driftContainerRef}
           targetRef={introContainerRef}
+          isEighteen={isEighteen}
           isSubmitted={isSubmitted}
           setIsDrift={setIsDrift}
         />

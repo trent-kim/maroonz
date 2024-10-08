@@ -8,10 +8,10 @@ const marqueeLength: number = 3;
 const DriftMarquee: React.FC<{
   driftContainerRef: React.RefObject<HTMLDivElement>;
   targetRef: React.RefObject<HTMLDivElement>;
-
+  isEighteen: boolean;
   isSubmitted: boolean;
   setIsDrift: Dispatch<SetStateAction<boolean>>;
-}> = ({ driftContainerRef, targetRef, isSubmitted, setIsDrift }) => {
+}> = ({ driftContainerRef, targetRef, isEighteen, isSubmitted, setIsDrift }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0); // Start at 0 instead of null
   const [order, setOrder] = useState<number[]>([]);
   const router = useRouter(); // Use the updated useRouter
@@ -117,7 +117,7 @@ const DriftMarquee: React.FC<{
           <div
             key={index}
             className={`font-serif text-md text-white translate-x-[-20%] animate-marquee 
-              ${isFadedIn && currentIndex === index ? "visible" : "invisible"} ${isSubmitted ? "blur-none" : "blur"}`}
+              ${isFadedIn && isEighteen && currentIndex === index ? "visible" : "invisible"} ${isSubmitted ? "blur-none" : "blur"}`}
             style={{
               transition: "filter 3000ms ease-in-out",
               transitionDelay: "3000ms",
