@@ -161,6 +161,7 @@ const Intro: React.FC<{
     const handleRouteChange = (url: string) => {
       if (isSubmitted) {
         if (savedIsDriftToHome === "true") {
+          setNoBlur([archiveButtonRef]);
           // Navigating from or to experience page
           setTimeout(() => {
             handleVisible([
@@ -175,6 +176,7 @@ const Intro: React.FC<{
             sessionStorage.setItem("isDriftToHome", JSON.stringify(false));
           }, fadeDuration);
         } else if (savedIsAToHome === "true") {
+          setNoBlur([archiveButtonRef]);
           setVisible([navHomeContainerRef])
           setTimeout(() => {
             handleVisible([
@@ -196,6 +198,7 @@ const Intro: React.FC<{
         }
       } else if (isAudio) {
         setIsQuestionsEnd(true);
+        setVisible([navHomeContainerRef])
         setTimeout(() => {
           handleVisible([
             navHomeContainerRef,
