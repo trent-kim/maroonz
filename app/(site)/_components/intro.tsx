@@ -324,14 +324,14 @@ const Intro: React.FC<{
         };
       } else if (isEighteen) {
         return () => {
-          setInvisible([
-            mapContainerRef,
-            driftContainerRef,
-            backgroundContainerRef,
-            textIntroContainerRef,
-            progressBarContainerRef,
-          ]);
-          setVisible([navHomeContainerRef]);
+          // setInvisible([
+          //   mapContainerRef,
+          //   driftContainerRef,
+          //   backgroundContainerRef,
+          //   textIntroContainerRef,
+          //   progressBarContainerRef,
+          // ]);
+          // setVisible([navHomeContainerRef]);
         };
       } else {
         return () => {
