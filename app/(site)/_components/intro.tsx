@@ -216,7 +216,7 @@ const Intro: React.FC<{
       } else if (isEighteen) {
         setVisible([navHomeContainerRef, logoRef])
 
-        // setTimeout(() => {
+        setTimeout(() => {
           handleVisible([
             navHomeContainerRef,
             logoRef,
@@ -230,7 +230,7 @@ const Intro: React.FC<{
             progressBarRef.current.play();
           }
           sessionStorage.setItem("isAToHome", JSON.stringify(false));
-        // }, fadeDuration);
+        }, fadeDuration);
       } else {
         setVisible([textIntroContainerRef, ageContainerRef, logoAnimationContainerRef]);
         setInvisible([backgroundContainerRef]);
