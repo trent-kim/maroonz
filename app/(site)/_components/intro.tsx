@@ -196,7 +196,18 @@ const Intro: React.FC<{
         }
       } else if (isAudio) {
         setIsQuestionsEnd(true);
-        setVisible([navHomeContainerRef, logoRef])
+        if (savedIsAToHome === "true") {
+          setVisible([navHomeContainerRef, logoRef])
+          setInvisible([
+            mapContainerRef,
+            driftContainerRef,
+            backgroundContainerRef,
+            textIntroContainerRef,
+            completedContainerRef,
+            completedMobileContainerRef,
+            orbContainerRef,
+          ]);
+        }
         setTimeout(() => {
           handleVisible([
             mapContainerRef,
@@ -210,8 +221,8 @@ const Intro: React.FC<{
           sessionStorage.setItem("isAToHome", JSON.stringify(false));
         }, fadeDuration);
       } else if (isEighteen) {
-        setVisible([navHomeContainerRef, logoRef])
         if (savedIsAToHome === "true") {
+          setVisible([navHomeContainerRef, logoRef])
           setInvisible([
             mapContainerRef,
             driftContainerRef,
