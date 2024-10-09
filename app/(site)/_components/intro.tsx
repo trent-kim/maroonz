@@ -233,6 +233,8 @@ const Intro: React.FC<{
         }
         setTimeout(() => {
           handleVisible([
+            navHomeContainerRef, 
+            logoRef,
             mapContainerRef,
             progressBarContainerRef,
             driftContainerRef,
