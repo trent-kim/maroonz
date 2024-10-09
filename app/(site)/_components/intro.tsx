@@ -178,6 +178,12 @@ const Intro: React.FC<{
         } else if (savedIsAToHome === "true") {
           setNoBlur([archiveButtonRef]);
           setVisible([navHomeContainerRef, logoRef])
+          setInvisible([
+            mapContainerRef,
+            driftContainerRef,
+            backgroundContainerRef,
+            textIntroContainerRef,
+          ]);
           setTimeout(() => {
             handleVisible([
               mapContainerRef,
