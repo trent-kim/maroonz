@@ -63,7 +63,7 @@ const TextProject: React.FC<TextProjectProps> = ({
   return (
     <div
       ref={TextProjectContainerRef}
-      className={`hidden md:block row-start-2 row-span-1 md:row-start-2 md:row-span-2 col-start-1 md:col-start-3 xl:col-start-5 overflow-scroll transition-opacity ease-in-out duration-md z-10 ${
+      className={`hidden md:block row-start-2 row-span-1 md:row-start-2 md:row-span-2 col-start-1 md:col-start-3 xl:col-start-5 overflow-scroll transition-all ease-in-out duration-md z-10 ${
         isVisible ? "opacity-100" : "opacity-0"
       }`}
       onScroll={handleScroll}

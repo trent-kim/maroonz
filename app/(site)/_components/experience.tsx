@@ -311,7 +311,7 @@ const Experience: React.FC<ExperienceProps> = ({
         ))}
       <div
         ref={experienceContainerRef}
-        className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 grid-rows-4 gap-lg p-lg h-[100vh] w-[100vw] absolute"
+        className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 grid-rows-4 gap-lg p-lg h-[100vh] w-[100vw] absolute transition-opacity ease-in-out duration-md opacity-100"
       >
         <TextCode
           textCodeContainerRef={textCodeContainerRef}

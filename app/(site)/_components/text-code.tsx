@@ -80,7 +80,7 @@ const TextCode: React.FC<TextCodeProps> = ({
   return (
     <div
       ref={textCodeContainerRef}
-      className={`hidden md:block row-start-2 col-start-1 overflow-hidden transition-opacity ease-in-out duration-md ${
+      className={`hidden md:block row-start-2 col-start-1 overflow-hidden transition-all ease-in-out duration-md ${
         isEnd ? "opacity-0" : "opacity-100"
       }`}
     >

@@ -39,7 +39,7 @@ const BarVideo: React.FC<BarVideoProps> = ({
   return (
     <div
       ref={progressBarContainerRef}
-      className={`row-start-4 md:row-start-3 col-start-1 content-end transition-opacity ease-in-out duration-md ${
+      className={`row-start-4 md:row-start-3 col-start-1 content-end transition-all ease-in-out duration-md ${
         isVisible ? "opacity-100 z-10" : "opacity-0 z-0"
       }`}
     >
