@@ -177,7 +177,7 @@ const Intro: React.FC<{
           }, fadeDuration);
         } else if (savedIsAToHome === "true") {
           setNoBlur([archiveButtonRef]);
-          setVisible([navHomeContainerRef])
+          setVisible([navHomeContainerRef, logoRef])
           setTimeout(() => {
             handleVisible([
               navHomeContainerRef,
@@ -198,7 +198,7 @@ const Intro: React.FC<{
         }
       } else if (isAudio) {
         setIsQuestionsEnd(true);
-        setVisible([navHomeContainerRef])
+        setVisible([navHomeContainerRef, logoRef])
         setTimeout(() => {
           handleVisible([
             navHomeContainerRef,
@@ -214,9 +214,9 @@ const Intro: React.FC<{
           sessionStorage.setItem("isAToHome", JSON.stringify(false));
         }, fadeDuration);
       } else if (isEighteen) {
-        setVisible([navHomeContainerRef])
+        setVisible([navHomeContainerRef, logoRef])
 
-        setTimeout(() => {
+        // setTimeout(() => {
           handleVisible([
             navHomeContainerRef,
             logoRef,
@@ -230,7 +230,7 @@ const Intro: React.FC<{
             progressBarRef.current.play();
           }
           sessionStorage.setItem("isAToHome", JSON.stringify(false));
-        }, fadeDuration);
+        // }, fadeDuration);
       } else {
         setVisible([textIntroContainerRef, ageContainerRef, logoAnimationContainerRef]);
         setInvisible([backgroundContainerRef]);
@@ -305,7 +305,7 @@ const Intro: React.FC<{
               backgroundContainerRef,
               textIntroContainerRef,
             ]);
-            setVisible([navHomeContainerRef]);
+            setVisible([navHomeContainerRef, logoRef]);
             setNoBlur([archiveButtonRef]);
           };
         }
@@ -320,18 +320,18 @@ const Intro: React.FC<{
             completedMobileContainerRef,
             orbContainerRef,
           ]);
-          setVisible([navHomeContainerRef]);
+          setVisible([navHomeContainerRef, logoRef]);
         };
       } else if (isEighteen) {
         return () => {
-          // setInvisible([
-          //   mapContainerRef,
-          //   driftContainerRef,
-          //   backgroundContainerRef,
-          //   textIntroContainerRef,
-          //   progressBarContainerRef,
-          // ]);
-          // setVisible([navHomeContainerRef]);
+          setInvisible([
+            mapContainerRef,
+            driftContainerRef,
+            backgroundContainerRef,
+            textIntroContainerRef,
+            progressBarContainerRef,
+          ]);
+          setVisible([navHomeContainerRef, logoRef]);
         };
       } else {
         return () => {
