@@ -163,10 +163,10 @@ const Intro: React.FC<{
         if (savedIsDriftToHome === "true") {
           setNoBlur([archiveButtonRef]);
           // Navigating from or to experience page
+          setVisible([logoRef])
           setTimeout(() => {
             handleVisible([
               navHomeContainerRef,
-              logoRef,
               mapContainerRef,
               backgroundContainerRef,
               textIntroContainerRef,
@@ -180,8 +180,6 @@ const Intro: React.FC<{
           setVisible([navHomeContainerRef, logoRef])
           setTimeout(() => {
             handleVisible([
-              navHomeContainerRef,
-              logoRef,
               mapContainerRef,
               backgroundContainerRef,
               textIntroContainerRef,
@@ -201,8 +199,6 @@ const Intro: React.FC<{
         setVisible([navHomeContainerRef, logoRef])
         setTimeout(() => {
           handleVisible([
-            navHomeContainerRef,
-            logoRef,
             mapContainerRef,
             driftContainerRef,
             backgroundContainerRef,
@@ -215,11 +211,17 @@ const Intro: React.FC<{
         }, fadeDuration);
       } else if (isEighteen) {
         setVisible([navHomeContainerRef, logoRef])
-
+        if (savedIsAToHome === "true") {
+          setInvisible([
+            mapContainerRef,
+            driftContainerRef,
+            backgroundContainerRef,
+            textIntroContainerRef,
+            progressBarContainerRef,
+          ]);
+        }
         setTimeout(() => {
           handleVisible([
-            navHomeContainerRef,
-            logoRef,
             mapContainerRef,
             progressBarContainerRef,
             driftContainerRef,
