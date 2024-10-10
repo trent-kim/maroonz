@@ -50,7 +50,6 @@ const BarAudio: React.FC<BarAudioProps> = ({
       <audio
         ref={progressBarRef}
         src={src}
-        controls
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleTimeUpdate} // Ensures the progress bar updates once duration is loaded
       />

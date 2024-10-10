@@ -22,7 +22,7 @@ const QuestionOrb: React.FC<{
 }> = ({ position, onClick, orbRef, animationClass, isSelected }) => {
   return (
     <div
-      className={`group rounded-full hover:shadow-glow cursor-pointer transition-shadow ease-in-out duration-sm
+      className={`group rounded-full hover:shadow-glow cursor-pointer 
       `}
       style={{
         position: "absolute",
@@ -31,12 +31,13 @@ const QuestionOrb: React.FC<{
         width: `${position.width}px`,
         height: `${position.height}px`,
         animation: animations[animationClass], // Inline animation assignment
+        transition: "box-shadow 500ms ease-in-out"
       }}
     >
       <div
         ref={orbRef}
         onClick={onClick}
-        className="font-mono text-sm text-white w-lg h-lg border border-white rounded-full flex justify-center items-center opacity-100 bg-none transition-all ease-in-out duration-md"
+        className="font-mono text-sm text-white w-lg h-lg border border-white rounded-full flex justify-center items-center opacity-100 bg-none "
         style={{
           transition: "all 3000ms ease-in-out, box-shadow 0ms",
         }}

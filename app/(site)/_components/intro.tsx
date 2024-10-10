@@ -155,6 +155,9 @@ const Intro: React.FC<{
     const savedIsAToHome = sessionStorage.getItem("isAToHome");
     const savedIsDriftToHome = sessionStorage.getItem("isDriftToHome");
 
+    sessionStorage.setItem("isDriftToHome", JSON.stringify(false));
+    sessionStorage.setItem("isAToHome", JSON.stringify(false));
+
     if (savedIsDriftToHome) {
       setIsDriftToHome(JSON.parse(savedIsDriftToHome));
     }
@@ -195,6 +198,7 @@ const Intro: React.FC<{
           }, fadeDuration);
         } else {
           handleNoBlur([archiveButtonRef]);
+
           setTimeout(() => {
             handleVisible([navHomeContainerRef, logoRef, mapContainerRef, backgroundContainerRef, textIntroContainerRef, driftContainerRef]);
             sessionStorage.setItem("isAToHome", JSON.stringify(false));
@@ -287,7 +291,6 @@ const Intro: React.FC<{
       setTimeout(() => {
         handleInvisible([completedContainerRef, completedMobileContainerRef]);
         handleVisible([driftContainerRef]);
-        handleNoBlur([archiveButtonRef]);
       }, 3000);
     }
 
